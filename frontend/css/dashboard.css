@@ -1,0 +1,65 @@
+.dropdown {
+    position: relative;
+    width: 250px;
+    min-width: 130px;
+    margin: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.conteiner{
+    display: flex;
+    flex-direction: row;
+}
+
+.dropdown-header {
+    background-color: white;
+    color: rgb(98, 0, 0);
+    padding: 12px 20px;
+    border: solid 1px rgb(98, 0, 0);
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+}
+
+.dropdown-header:hover {
+    background-color: rgb(98, 0, 0);
+    color: white;
+}
+
+
+.dropdown-options {
+    position: absolute;
+    top: 105%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    color: rgb(98, 0, 0);
+    border-radius: 12px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: none; 
+    z-index: 1000;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.dropdown-options li {
+    padding: 12px 20px;
+    color: rgb(98, 0, 0);
+    border: rgb(98, 0, 0);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.dropdown-options li:hover {
+    color: white;
+    background-color: rgb(98, 0, 0); /* Un rojo un poco más claro o gris oscuro */
+}
+
+.show-dropdown {
+    display: block;
+}

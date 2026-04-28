@@ -7,6 +7,7 @@
     <link rel="icon" href="../assets/Logo.png" type="image/png">
     <title>Observatorio Laboral Up</title>
     <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
     <script src="../js/config.js"></script>
     <script src="../js/dashboard.js"></script>
 </head>
@@ -66,6 +67,108 @@
             <h1 class="topTitle" id="topTitle">Dashboard</h1>
             <h3>Bienvenid@, <span id="nombre"></span> <span id="apellido"></span></h3>
         </div>
+
+        <div class="conteiner">
+            <div class="dropdown" id="dropdownCampus">
+                <div class="dropdown-header" onclick="dropdownCampus()">
+                    <span id="selected-campus">Todos los campus</span>
+                    <span>▼</span>
+                </div>
+                <ul class="dropdown-options" id="dropdownOptionsCampus">
+                    <li onclick="seleccionarCampus('Todos los campus', 'todos')">Todos los campus</li>
+                    <li onclick="seleccionarCampus('Aguascalientes', 'aguascalientes')">Aguascalientes</li>
+                    <li onclick="seleccionarCampus('Guadalajara', 'guadalajara')">Guadalajara</li>
+                    <li onclick="seleccionarCampus('Ciudad UP', 'ciudadUp')">Ciudad UP</li>
+                    <li onclick="seleccionarCampus('Mixcoac', 'mixcoac')">Mixcoac</li>
+                </ul>
+            </div>
+
+            <div class="dropdown" id="dropdownFacultad">
+                <div class="dropdown-header" onclick="dropdownFacultad()">
+                    <span id="selected-facultad">Todas las Facultades</span>
+                    <span>▼</span>
+                </div>
+                <ul class="dropdown-options" id="dropdownOptionsFacultad">
+                    <li onclick="seleccionarFacultad('Todas las Facultades', 'todos')">Todas las Facultades</li>
+                    <li onclick="seleccionarFacultad('Facultad de Empresariales', 'empresariales')">Facultad de Empresariales</li>
+                    <li onclick="seleccionarFacultad('Facultad de Ciencias Económicas y Empresariales', 'economicasyEmpresariales')">Facultad de Ciencias Económicas y Empresariales </li>
+                    <li onclick="seleccionarFacultad('Escuela de Arquitectura', 'arquitectura')">Escuela de Arquitectura</li>
+                    <li onclick="seleccionarFacultad('Escuela de Bellas Artes', 'bellasArtes')">Escuela de Bellas Artess</li>
+                    <li onclick="seleccionarFacultad('Escuela de Comunicación', 'comunicacion')">Escuela de Comunicación</li>
+                    <li onclick="seleccionarFacultad('Escuela de Dirección de Negocios Gastronómicos', 'dng')">Escuela de Dirección de Negocios Gastronómicos</li>
+                    <li onclick="seleccionarFacultad('Escuela de Gobierno y Economía', 'gobierno')">Escuela de Gobierno y Economía</li>
+                    <li onclick="seleccionarFacultad('Escuela de Hospitalidad', 'hospitalidad')">Escuela de Hospitalidad</li>
+                    <li onclick="seleccionarFacultad('Escuela de Hospitalidad ESDAI', 'esdai')">Escuela de Hospitalidad ESDAI</li>
+                    <li onclick="seleccionarFacultad('Escuela de Negocios Gastronómicos', 'gastronomia')">Escuela de Negocios Gastronómicos</li>
+                    <li onclick="seleccionarFacultad('Escuela de Pedagogía', 'pedagogia')">Escuela de Pedagogía</li>
+                    <li onclick="seleccionarFacultad('Facultad de Ciencias de la Salud', 'salud')">Facultad de Ciencias de la Salud</li>
+                    <li onclick="seleccionarFacultad('Facultad de Derecho', 'derecho')">Facultad de Derecho</li>
+                    <li onclick="seleccionarFacultad('Facultad de Filosofía', 'filosofia')">Facultad de Filosofía</li>
+                    <li onclick="seleccionarFacultad('Facultad de Ingeniería', 'ingenieria')">Facultad de Ingeniería</li>
+                </ul>
+            </div>
+
+            <div class="dropdown" id="dropdownCarrera">
+                <div class="dropdown-header" onclick="dropdownCarrera()">
+                    <span id="selected-carrera">Todas las carreras</span>
+                    <span>▼</span>
+                </div>
+                <ul class="dropdown-options" id="dropdownOptionsCarrera">
+                    <li onclick="seleccionarCarrera('Todas las carreras', 'todos')">Todas las carreras</li>
+                    <li onclick="seleccionarCarrera('Administración y Dirección', 'admin')">Administración y Dirección</li>
+                    <li onclick="seleccionarCarrera('Administración y Dirección de Empresas Familiares', 'negociosFamiliares')">Administración y Dirección de Empresas Familiares</li>
+                    <li onclick="seleccionarCarrera('Administración y Dirección de Talento', 'talento')">Administración y Dirección de Talento</li>
+                    <li onclick="seleccionarCarrera('Administración y Finanzas', 'finazas')">Administración y Finanzas</li>
+                    <li onclick="seleccionarCarrera('Administración y Hospitalidad', 'hospitalidad')">Administración y Hospitalidad</li>
+                    <li onclick="seleccionarCarrera('Administración y Mercadotecnia', 'merca')">Administración y Mercadotecnia</li>
+                    <li onclick="seleccionarCarrera('Administración y Negocios Internacionales', 'negocios')">Administración y Negocios Internacionales</li>
+                    <li onclick="seleccionarCarrera('Administración y Recursos Humanos', 'rh')">Administración y Recursos Humanos</li>
+                    <li onclick="seleccionarCarrera('Arquitectura', 'arqui')">Arquitectura</li>
+                    <li onclick="seleccionarCarrera('Business and Management', 'busisness')">Business and Management</li>
+                    <li onclick="seleccionarCarrera('Business Intelligence ', 'intelligence')">Business Intelligence </li>
+                    <li onclick="seleccionarCarrera('Comunicación', 'comunicacion')">Comunicación</li>
+                    <li onclick="seleccionarCarrera('Comunicación y Creación Audiovisual', 'audiovisual')">Comunicación y Creación Audiovisual</li>
+                    <li onclick="seleccionarCarrera('Comunicación y Periodismo', 'periodismo')">Comunicación y Periodismo</li>
+                    <li onclick="seleccionarCarrera('Comunicación, Publicidad y Relaciones Públicas', 'relacionesPublicas')">Comunicación, Publicidad y Relaciones Públicas</li>
+                    <li onclick="seleccionarCarrera('Contaduría', 'conta')">Contaduría</li>
+                    <li onclick="seleccionarCarrera('Derecho ', 'derecho')">Derecho</li>
+                    <li onclick="seleccionarCarrera('Dirección de Negocios Gastronómicos', 'dng')">Dirección de Negocios Gastronómicos</li>
+                    <li onclick="seleccionarCarrera('Economía', 'economia')">Economía</li>
+                    <li onclick="seleccionarCarrera('Enfermería', 'enfermeria')">Enfermería</li>
+                    <li onclick="seleccionarCarrera('Filosofía', 'filosofia')">Filosofía</li>
+                    <li onclick="seleccionarCarrera('Finanzas Cuantitativas', 'cuantitativas')">Finanzas Cuantitativas</li>
+                    <li onclick="seleccionarCarrera('Gobierno', 'gobierno')">Gobierno</li>
+                    <li onclick="seleccionarCarrera('Gobierno y Economía', 'gobiernoEconomia')">Gobierno y Economía</li>
+                    <li onclick="seleccionarCarrera('Hospitality Management', 'hospitality')">Hospitality Management</li>
+                    <li onclick="seleccionarCarrera('Ingeniaría en Innovación y Diseño', 'innovacion')">Ingeniaría en Innovación y Diseño</li>
+                    <li onclick="seleccionarCarrera('Ingeniería Bioelectrónica', 'bioelectronica')">Ingeniería Bioelectrónica</li>
+                    <li onclick="seleccionarCarrera('Ingeniería Civil y Administración', 'civil')">Ingeniería Civil y Administración</li>
+                    <li onclick="seleccionarCarrera('Ingeniería en Animación Digital', 'animacion')">Ingeniería en Animación Digital</li>
+                    <li onclick="seleccionarCarrera('Ingeniería en Animación y Videojuegos', 'videojuegos')">Ingeniería en Animación y Videojuegos</li>
+                    <li onclick="seleccionarCarrera('Ingeniería en Inteligencia Artificial', 'ia')">Ingeniería en Inteligencia Artificial</li>
+                    <li onclick="seleccionarCarrera('Ingenieria en Inteligencia de Datos y Ciberseguridad', 'ciberseguridad')">Ingenieria en Inteligencia de Datos y Ciberseguridad</li>
+                    <li onclick="seleccionarCarrera('Ingeniería en Sistemas y Gráficas Computacionales', 'sistemas')">Ingeniería en Sistemas y Gráficas Computacionales</li>
+                    <li onclick="seleccionarCarrera('Ingeniería en Tecnologías de la Información y Sistemas Inteligentes ', 'tecnologiaInformacion')">Ingeniería en Tecnologías de la Información y Sistemas Inteligentes </li>
+                    <li onclick="seleccionarCarrera('Ingeniería en Tecnologías Energéticas', 'energeticas')">Ingeniería en Tecnologías Energéticas</li>
+                    <li onclick="seleccionarCarrera('Ingeniería Industrial', 'industrial')">Ingeniería Industrial</li>
+                    <li onclick="seleccionarCarrera('Ingeniería Industrial e innovació basada en datos', 'industrialDatos')">Ingeniería Industrial e innovació basada en datos</li>
+                    <li onclick="seleccionarCarrera('Ingeniería Industrial e Innovación de Negocios', 'industrialNegocios')">Ingeniería Industrial e Innovación de Negocios</li>
+                    <li onclick="seleccionarCarrera('Ingeniería Industrial y Gestión de la Innovación', 'industrialGestion')">Ingeniería Industrial y Gestión de la Innovación</li>
+                    <li onclick="seleccionarCarrera('Ingeniería Mecánica', 'mecanica')">Ingeniería Mecánica</li>
+                    <li onclick="seleccionarCarrera('Ingeniería Mecatrónica', 'mecatronica')">Ingeniería Mecatrónica</li>
+                    <li onclick="seleccionarCarrera('Matemáticas Aplicadas', 'matematicas')">Matemáticas Aplicadas</li>
+                    <li onclick="seleccionarCarrera('Médico Cirujano', 'medicina')">Médico Cirujano</li>
+                    <li onclick="seleccionarCarrera('Mercadotecnia y Estrategia de Datos', 'mercaDatos')">Mercadotecnia y Estrategia de Datos</li>
+                    <li onclick="seleccionarCarrera('Música e Innovación', 'musica')">Música e Innovación</li>
+                    <li onclick="seleccionarCarrera('Pedagogía', 'pedagogía')">Pedagogía</li>
+                    <li onclick="seleccionarCarrera('Pedagogía e Innovación Educativa', 'pedagogiaEducacion')">Pedagogía e Innovación Educativa</li>
+                    <li onclick="seleccionarCarrera('Psicología', 'psicología')">Psicología</li>
+                    <li onclick="seleccionarCarrera('Psicopedagogía', 'psicopedagogía')">Psicopedagogía</li>
+                    <li onclick="seleccionarCarrera('Matemáticas Aplicadas', 'matematicas')">Matemáticas Aplicadas</li>
+                </ul>
+            </div>
+        </div>
+        
     </div>
 
 </body>

@@ -265,3 +265,26 @@ app.put("/usuarios/cuenta/:id", verificarToken, async (req, res) => {
         res.status(500).json({ error: "Error al actualizar el usuario" });
     }
 });
+
+//Base de datos del QS
+app.get('/qsData', async (req, res) => {
+    try {
+        const SPREADSHEET_ID = process.env.IDSheets;
+        const rows = await getSheetData(SPREADSHEET_ID, 'Hoja1!A2:AD3500');
+
+        if (!rows || rows.length === 0) return res.status(404).json([]);
+
+        const data = rows.map(fila => ({
+            campus: fila[10],
+            carrera: fila[11],
+            facultad: fila[28],
+            trabaja: fila[17],
+            sector: fila[24],
+            semestre: fila[26]
+        }));
+
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});

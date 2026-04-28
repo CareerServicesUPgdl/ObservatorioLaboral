@@ -43,3 +43,56 @@ fetch(`${API_URL}/perfil`, {
     localStorage.removeItem("token");
     window.location.href = "../html/Login.html";
 });
+
+function dropdownCampus() {
+    document.getElementById("dropdownOptionsCampus").classList.toggle("show-dropdown");
+}
+
+function dropdownFacultad() {
+    document.getElementById("dropdownOptionsFacultad").classList.toggle("show-dropdown");
+}
+
+function dropdownCarrera() {
+    document.getElementById("dropdownOptionsCarrera").classList.toggle("show-dropdown");
+}
+
+function seleccionarCampus(nombre, valor) {
+    document.getElementById("selected-campus").innerText = nombre;
+    
+    dropdownCampus();
+    
+    filtrarPorCampus(valor); 
+}
+
+function seleccionarFacultad(nombre, valor) {
+    document.getElementById("selected-facultad").innerText = nombre;
+    
+    dropdownFacultad();
+    
+    filtrarPorFacultad(valor); 
+}
+
+function seleccionarCarrera(nombre, valor) {
+    document.getElementById("selected-carrera").innerText = nombre;
+    
+    dropdownCarrera();
+    
+    filtrarPorCarrera(valor); 
+}
+
+window.onclick = function(event) {
+    if (!event.target.closest('.dropdown')) {
+        const dropdown = document.getElementById("dropdownOptionsCampus");
+        if (dropdown.classList.contains('show-dropdown')) {
+            dropdown.classList.remove('show-dropdown');
+        }
+        const dropdownFacultad = document.getElementById("dropdownOptionsFacultad");
+        if (dropdownFacultad.classList.contains('show-dropdown')) {
+            dropdownFacultad.classList.remove('show-dropdown');
+        }
+        const dropdownCarrera = document.getElementById("dropdownOptionsCarrera");
+        if (dropdownCarrera.classList.contains('show-dropdown')) {
+            dropdownCarrera.classList.remove('show-dropdown');
+        }
+    }
+}
