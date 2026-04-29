@@ -268,9 +268,10 @@ app.put("/usuarios/cuenta/:id", verificarToken, async (req, res) => {
 
 //Base de datos del QS
 app.get('/qsData', async (req, res) => {
+    console.log("djskfsdkl")
     try {
         const SPREADSHEET_ID = process.env.IDSheets;
-        const rows = await getSheetData(SPREADSHEET_ID, 'Hoja1!A2:AD3500');
+        const rows = await getSheetData(SPREADSHEET_ID, 'Respuestas de formulario 1!A2:AD3500');
 
         if (!rows || rows.length === 0) return res.status(404).json([]);
 
@@ -282,6 +283,8 @@ app.get('/qsData', async (req, res) => {
             sector: fila[24],
             semestre: fila[26]
         }));
+
+        console.log(data);
 
         res.json(data);
     } catch (error) {

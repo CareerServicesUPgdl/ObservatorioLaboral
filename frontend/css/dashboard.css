@@ -63,3 +63,17 @@
 .show-dropdown {
     display: block;
 }
+
+.dashboard-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.chart-box {
+    width: 100%;
+    max-width: 500px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
