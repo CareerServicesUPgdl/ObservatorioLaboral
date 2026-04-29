@@ -11,11 +11,6 @@ const { getQS } = require('./sheets.js');
 app.use(cors());
 app.use(express.json());
 
-console.log("--- CHEQUEO DE INICIO ---");
-console.log("MONGO_URI existe:", !!process.env.mongo);
-console.log("CORREO existe:", !!process.env.CORREO);
-console.log("PASS existe:", !!process.env.contrasenaCorreo);
-
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -271,7 +266,7 @@ app.put("/usuarios/cuenta/:id", verificarToken, async (req, res) => {
 app.get('/qsData', async (req, res) => {
     try {
         const SPREADSHEET_ID = process.env.IDSheets;
-        const rows = await getSheetData(SPREADSHEET_ID, "'Respuestas de formulario 1'!A2:AD3500");
+        const rows = await getQS(SPREADSHEET_ID, "'Respuestas de formulario 1'!A2:AD3500");
 
         if (!rows || rows.length === 0) return res.status(404).json([]);
 
