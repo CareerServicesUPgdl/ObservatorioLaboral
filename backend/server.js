@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const app = express();
+const { getQS } = require('./sheets.js');
 
 app.use(cors());
 app.use(express.json());
