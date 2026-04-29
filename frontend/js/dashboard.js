@@ -133,7 +133,7 @@ function graficaEmpleabilidad(si, no) {
             datasets: [{
                 label: 'Situación Laboral',
                 data: [si, no],
-                backgroundColor: ['#4CAF50', '#F44336'], // Verde y Rojo
+                backgroundColor: ['#88803c', '#710800'],
                 borderWidth: 1
             }]
         },
@@ -147,8 +147,32 @@ function graficaEmpleabilidad(si, no) {
     });
 }
 
-function filtrarPorFacultad(String){
+async function filtrarPorCampus(campusSeleccionado){
+    let empleados = 0;
+    let noEmpleados = 0;
 
+    try {
+        const response = await fetch(`${API_URL}/qsData`);
+        const data = await response.json();
+        if(campusSeleccionado==="todos"){
+            iniciarDashboard();
+            return;
+        }
+        data.forEach(alumno => {
+            if (alumno.campus.trim().toLowerCase()===campusSeleccionado.trim().toLowerCase()){
+                if (alumno.trabaja && alumno.trabaja.trim().toLowerCase() === "sí") {
+                    empleados++;
+                } else {
+                    noEmpleados++;
+                }
+            }
+        });
+
+        graficaEmpleabilidad(empleados, noEmpleados);
+        
+    } catch (error) {
+        console.error("Error cargando el dashboard:", error);
+    }
 }
 
 
