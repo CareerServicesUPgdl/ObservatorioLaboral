@@ -201,16 +201,16 @@ function aplicarFiltros() {
 
     todosLosDatos.forEach(alumno => {
         const cumpleCampus = filtroActual.campus === "Todos los campus" || 
-                             alumno.campus.trim() === filtroActual.campus;
+                             alumno.campus.trim().toLowerCase() === filtroActual.campus.trim().toLowerCase();
                              
         const cumpleFacultad = filtroActual.facultad === "Todas las Facultades" || 
-                               alumno.facultad.trim() === filtroActual.facultad;
+                               alumno.facultad.trim().toLowerCase() === filtroActual.facultad.trim().toLowerCase();
                                
         const cumpleCarrera = filtroActual.carrera === "Todas las carreras" || 
-                              alumno.carrera.trim() === filtroActual.carrera;
+                              alumno.carrera.trim().toLowerCase() === filtroActual.carrera.trim().toLowerCase();
 
         if (cumpleCampus && cumpleFacultad && cumpleCarrera) {
-            if (alumno.trabaja && alumno.trabaja.trim().toLowerCase() === "sí") {
+            if (alumno.trabaja && (alumno.trabaja.trim().toLowerCase() === "sí" || alumno.trabaja.trim().toLowerCase() === "si")) {
                 empleados++;
             } else {
                 noEmpleados++;
