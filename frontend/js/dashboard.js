@@ -224,7 +224,7 @@ function aplicarFiltros() {
 function actualizarDropdowns() {
     const datosPorCampus = todosLosDatos.filter(alumno => {
         return filtroActual.campus === "Todos los campus" || 
-               alumno.campus.trim().toLowerCase() === filtroActual.campus.trim().toLowerCase();
+               alumno.campus.trim() === filtroActual.campus.trim();
     });
 
     const facultadesDisponibles = [...new Set(datosPorCampus.map(a => a.facultad))].sort();
@@ -242,11 +242,10 @@ function actualizarDropdowns() {
 
     const datosPorFacultad = datosPorCampus.filter(alumno => {
         return filtroActual.facultad === "Todas las Facultades" || 
-               alumno.facultad.trim().toLowerCase() === filtroActual.facultad.trim().toLowerCase();
+               alumno.facultad.trim() === filtroActual.facultad.trim();
     });
 
     const carrerasDisponibles = [...new Set(datosPorFacultad.map(a => a.carrera))].sort();
-    console.log("Carreras encontradas para esta facultad:", carrerasDisponibles);
     const listaCarreras = document.getElementById('dropdownOptionsCarrera');
 
     listaCarreras.innerHTML = `<li onclick="seleccionarCarrera('Todas las carreras')">Todas las carreras</li>`;
