@@ -1,5 +1,9 @@
 const token = localStorage.getItem("token");
 
+var campus="";
+var facultad="";
+var carrera="";
+
 if (!token) {
     window.location.href = "../html/Login.html";
 }
@@ -55,30 +59,6 @@ function dropdownCarrera() {
     document.getElementById("dropdownOptionsCarrera").classList.toggle("show-dropdown");
 }
 
-function seleccionarCampus(nombre, valor) {
-    document.getElementById("selected-campus").innerText = nombre;
-    
-    dropdownCampus();
-    
-    filtrarPorCampus(valor); 
-}
-
-function seleccionarFacultad(nombre, valor) {
-    document.getElementById("selected-facultad").innerText = nombre;
-    
-    dropdownFacultad();
-    
-    filtrarPorFacultad(valor); 
-}
-
-function seleccionarCarrera(nombre, valor) {
-    document.getElementById("selected-carrera").innerText = nombre;
-    
-    dropdownCarrera();
-    
-    filtrarPorCarrera(valor); 
-}
-
 window.onclick = function(event) {
     if (!event.target.closest('.dropdown')) {
         const dropdown = document.getElementById("dropdownOptionsCampus");
@@ -121,7 +101,7 @@ async function iniciarDashboard() {
 
 function graficaEmpleabilidad(si, no) {
     const ctx = document.getElementById('empleabilidad').getContext('2d');
-    
+
     if (window.chartEmpleo) {
         window.chartEmpleo.destroy();
     }
@@ -137,47 +117,153 @@ function graficaEmpleabilidad(si, no) {
                 borderWidth: 1
             }]
         },
+        plugins: [ChartDataLabels],
         options: {
             responsive: true,
             plugins: {
-                legend: { position: 'top' },
-                title: { display: true, text: 'Índice de empleabilidad' }
+                legend: { 
+                    position: 'top',
+                    labels: { color: '#333', font: { size: 14 } }
+                },
+                title: { 
+                    display: true, 
+                    text: 'Índice de empleabilidad',
+                    font: { size: 18},
+                    color: '#000000' 
+                },
+                datalabels: {
+                    color: '#fff',
+                    font: {size: 12 },
+                    display: (context) => context.dataset.data[context.dataIndex] > 0,
+                    formatter: (value, ctx) => {
+                        const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                        if (total === 0) return "0%"; // Evita división por cero
+                        const percentage = ((value * 100) / total).toFixed(1) + "%";
+                        return percentage;
+                    }
+                }
             }
         }
     });
 }
 
-async function filtrarPorCampus(campusSeleccionado){
-    let empleados = 0;
-    let noEmpleados = 0;
+let todosLosDatos = [];
+let filtroActual = {
+    campus: "Todos los campus",
+    facultad: "Todas las Facultades",
+    carrera: "Todas las carreras"
+};
 
+async function iniciarDashboard() {
     try {
         const response = await fetch(`${API_URL}/qsData`);
-        const data = await response.json();
-        if(campusSeleccionado==="todos"){
-            iniciarDashboard();
-            return;
-        }
-        data.forEach(alumno => {
-            if (alumno.campus.trim().toLowerCase()===campusSeleccionado.trim().toLowerCase()){
-                if (alumno.trabaja && alumno.trabaja.trim().toLowerCase() === "sí") {
-                    empleados++;
-                } else {
-                    noEmpleados++;
-                }
-            }
-        });
-
-        graficaEmpleabilidad(empleados, noEmpleados);
-        
+        todosLosDatos = await response.json();
+        aplicarFiltros();
     } catch (error) {
-        console.error("Error cargando el dashboard:", error);
+        console.error("Error al obtener datos:", error);
     }
 }
 
+function seleccionarCampus(valor) {
+    filtroActual.campus = valor;
+    document.getElementById('selected-campus').textContent = valor;
+    
+    filtroActual.facultad = "Todas las Facultades";
+    document.getElementById('selected-facultad').textContent = "Todas las Facultades";
+    filtroActual.carrera = "Todas las carreras";
+    document.getElementById('selected-carrera').textContent = "Todas las carreras";
 
+    actualizarDropdowns();
+    aplicarFiltros();
+}
 
+function seleccionarFacultad(valor) {
+    filtroActual.facultad = valor;
+    document.getElementById('selected-facultad').textContent = valor;
+    
+    filtroActual.carrera = "Todas las carreras";
+    document.getElementById('selected-carrera').textContent = "Todas las carreras";
 
+    actualizarDropdowns();
+    aplicarFiltros();
+}
+
+function seleccionarCarrera(valor) {
+    filtroActual.carrera = valor;
+    document.getElementById('selected-carrera').textContent = valor;
+    dropdownCarrera();
+    aplicarFiltros();
+}
+
+function aplicarFiltros() {
+    let empleados = 0;
+    let noEmpleados = 0;
+
+    todosLosDatos.forEach(alumno => {
+        const cumpleCampus = filtroActual.campus === "Todos los campus" || 
+                             alumno.campus.trim() === filtroActual.campus;
+                             
+        const cumpleFacultad = filtroActual.facultad === "Todas las Facultades" || 
+                               alumno.facultad.trim() === filtroActual.facultad;
+                               
+        const cumpleCarrera = filtroActual.carrera === "Todas las carreras" || 
+                              alumno.carrera.trim() === filtroActual.carrera;
+
+        if (cumpleCampus && cumpleFacultad && cumpleCarrera) {
+            if (alumno.trabaja && alumno.trabaja.trim().toLowerCase() === "sí") {
+                empleados++;
+            } else {
+                noEmpleados++;
+            }
+        }
+    });
+
+    graficaEmpleabilidad(empleados, noEmpleados);
+}
+
+function actualizarDropdowns() {
+    const datosPorCampus = todosLosDatos.filter(alumno => {
+        return filtroActual.campus === "Todos los campus" || 
+               alumno.campus.trim() === filtroActual.campus.trim();
+    });
+
+    const facultadesDisponibles = [...new Set(datosPorCampus.map(a => a.facultad))].sort();
+    const listaFacultades = document.getElementById('dropdownOptionsFacultad');
+    
+    listaFacultades.innerHTML = `<li onclick="seleccionarFacultad('Todas las Facultades')">Todas las Facultades</li>`;
+    facultadesDisponibles.forEach(fac => {
+        if(fac) {
+            const li = document.createElement('li');
+            li.textContent = fac;
+            li.onclick = () => seleccionarFacultad(fac);
+            listaFacultades.appendChild(li);
+        }
+    });
+
+    const datosPorFacultad = datosPorCampus.filter(alumno => {
+        return filtroActual.facultad === "Todas las Facultades" || 
+               alumno.facultad.trim() === filtroActual.facultad.trim();
+    });
+
+    const carrerasDisponibles = [...new Set(datosPorFacultad.map(a => a.carrera))].sort();
+    const listaCarreras = document.getElementById('dropdownOptionsCarrera');
+
+    listaCarreras.innerHTML = `<li onclick="seleccionarCarrera('Todas las carreras')">Todas las carreras</li>`;
+    carrerasDisponibles.forEach(car => {
+        if(car) {
+            const li = document.createElement('li');
+            li.textContent = car;
+            li.onclick = () => seleccionarCarrera(car);
+            listaCarreras.appendChild(li);
+        }
+    });
+}
+
+async function restablecerFiltros() {
+    seleccionarCampus("Todos los campus");
+    seleccionarFacultad("Todas las Facultades");
+    seleccionarCarrera("Todas las carreras");
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     iniciarDashboard();
