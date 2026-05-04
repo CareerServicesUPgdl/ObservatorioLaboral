@@ -1,6 +1,4 @@
 require("dotenv").config();
-const dns = require('dns');
-dns.setDefaultResultOrder('ipv4first');
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
@@ -14,12 +12,14 @@ app.use(cors());
 app.use(express.json());
 
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
+    service: 'gmail',
     auth: {
-        user: process.env.CORREO,
-        pass: process.env.contrasenaCorreo
-    },
-    family: 4
+        type: 'OAuth2',
+        user: process.env.CORREO, // Tu cuenta de gmail
+        clientId: process.env.IDCliente,
+        clientSecret: process.env.SecretoCliente,
+        refreshToken: process.env.refreshToken
+    }
 });
 
 transporter.verify(function (error, success) {
