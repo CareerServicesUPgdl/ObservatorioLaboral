@@ -12,14 +12,20 @@ app.use(cors());
 app.use(express.json());
 
 const transporter = nodemailer.createTransport({
+    service: 'gmail',
     host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
         type: 'OAuth2',
         user: process.env.CORREO, // Tu cuenta de gmail
         clientId: process.env.IDCliente,
         clientSecret: process.env.SecretoCliente,
         refreshToken: process.env.refreshToken
-    }
+    },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 10000
 });
 
 transporter.verify(function (error, success) {
