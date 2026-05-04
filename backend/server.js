@@ -12,13 +12,14 @@ app.use(cors());
 app.use(express.json());
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: 'smtp.gmail.com',
     port: 465,
     secure: true,
     auth: {
         user: process.env.CORREO,
         pass: process.env.contrasenaCorreo
-    }
+    },
+    family: 4
 });
 
 mongoose.connect(process.env.mongo)
@@ -67,7 +68,7 @@ app.post("/registro", async (req, res) => {
         process.env.tokenSecret,
         { expiresIn: "1d" }
     );
-    console.log("enviando corrwo ...")
+    console.log("enviando correo ...")
     const link = `${process.env.URL}/verificar/${token}`;
 
     await transporter.sendMail({
