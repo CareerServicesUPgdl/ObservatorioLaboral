@@ -22,6 +22,14 @@ const transporter = nodemailer.createTransport({
     family: 4
 });
 
+transporter.verify(function (error, success) {
+  if (error) {
+    console.log("Error en la configuración del transporte:", error);
+  } else {
+    console.log("El servidor está listo para enviar correos");
+  }
+});
+
 mongoose.connect(process.env.mongo)
     .then(() => console.log("Mongo conectado"))
     .catch(err => console.log(err));
