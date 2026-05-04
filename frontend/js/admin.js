@@ -38,7 +38,7 @@ fetch(`${API_URL}/perfil`, {
         console.log("Error:", error.message);
 
         localStorage.removeItem("token");
-        window.location.href = "../login/Login.html";
+        window.location.href = "../html/Login.html";
     });
 
 //mostrar usuarios
