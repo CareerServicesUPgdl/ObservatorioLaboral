@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
     auth: {
         type: 'OAuth2',
         user: process.env.CORREO, // Tu cuenta de gmail
