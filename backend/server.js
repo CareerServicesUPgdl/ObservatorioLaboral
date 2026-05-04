@@ -67,7 +67,7 @@ app.post("/registro", async (req, res) => {
         process.env.tokenSecret,
         { expiresIn: "1d" }
     );
-
+    console.log("enviando corrwo ...")
     const link = `${process.env.URL}/verificar/${token}`;
 
     await transporter.sendMail({
