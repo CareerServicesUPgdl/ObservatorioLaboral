@@ -158,6 +158,7 @@ async function iniciarDashboard() {
     try {
         const response = await fetch(`${API_URL}/qsData`);
         todosLosDatos = await response.json();
+        actualizarDropdowns();
         aplicarFiltros();
     } catch (error) {
         console.error("Error al obtener datos:", error);

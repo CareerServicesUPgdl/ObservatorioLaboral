@@ -266,7 +266,7 @@ app.put("/usuarios/cuenta/:id", verificarToken, async (req, res) => {
 app.get('/qsData', async (req, res) => {
     try {
         const SPREADSHEET_ID = process.env.IDSheets;
-        const rows = await getQS(SPREADSHEET_ID, "'Respuestas de formulario 1'!A2:AD3500");
+        const rows = await getQS(SPREADSHEET_ID, "'Respuestas de formulario 1'!A2:AD3600");
 
         if (!rows || rows.length === 0) return res.status(404).json([]);
 
