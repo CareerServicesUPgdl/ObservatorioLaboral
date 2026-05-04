@@ -81,6 +81,7 @@
     background-color: white;
     color: rgb(98, 0, 0);
     padding: 12px 20px;
+    margin-left: 20px;
     border: none;
     cursor: pointer;
     display: flex;

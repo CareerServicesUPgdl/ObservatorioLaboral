@@ -70,6 +70,8 @@ app.post("/registro", async (req, res) => {
 
     await transporter.sendMail({
         from: process.env.CORREO,
+        port: 465,
+        secure: true,
         to: email,
         subject: "Verifica tu cuenta",
         html: `
