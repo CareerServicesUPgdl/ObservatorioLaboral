@@ -13,6 +13,8 @@ app.use(express.json());
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
+    port: 465,
+    secure: true,
     auth: {
         user: process.env.CORREO,
         pass: process.env.contrasenaCorreo
@@ -70,8 +72,6 @@ app.post("/registro", async (req, res) => {
 
     await transporter.sendMail({
         from: process.env.CORREO,
-        port: 465,
-        secure: true,
         to: email,
         subject: "Verifica tu cuenta",
         html: `
