@@ -13,13 +13,18 @@ app.use(express.json());
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
+    port: 587,
+    secure: false,
     auth: {
         user: process.env.CORREO,
         pass: process.env.contrasenaCorreo
     },
-    family: 4
+    family: 4,
+    tls: {
+        // Render a veces tiene problemas de red interna, esto ayuda:
+        rejectUnauthorized: false,
+        minVersion: "TLSv1.2"
+    }
 });
 
 transporter.verify(function (error, success) {
