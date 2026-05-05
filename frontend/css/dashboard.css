@@ -72,6 +72,17 @@
 .chart-box {
     width: 100%;
     max-width: 250px;
+    max-height: 250px;
+    margin-right: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.chart-colocacion {
+    width: 100%;
+    max-width: 1000px;
+    height: 750px;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);

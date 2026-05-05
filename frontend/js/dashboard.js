@@ -76,29 +76,6 @@ window.onclick = function(event) {
     }
 }
 
-async function iniciarDashboard() {
-    let empleados = 0;
-    let noEmpleados = 0;
-
-    try {
-        const response = await fetch(`${API_URL}/qsData`);
-        const data = await response.json();
-
-        data.forEach(alumno => {
-            if (alumno.trabaja && alumno.trabaja.trim().toLowerCase() === "sí") {
-                empleados++;
-            } else {
-                noEmpleados++;
-            }
-        });
-
-        graficaEmpleabilidad(empleados, noEmpleados);
-        
-    } catch (error) {
-        console.error("Error cargando el dashboard:", error);
-    }
-}
-
 function graficaEmpleabilidad(si, no) {
     const ctx = document.getElementById('empleabilidad').getContext('2d');
 
@@ -147,6 +124,77 @@ function graficaEmpleabilidad(si, no) {
     });
 }
 
+function graficaColocacion(datosProcesados) {
+    const canvas = document.getElementById('graficaColocacion');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+
+    if (window.chartColocacion) {
+        window.chartColocacion.destroy();
+    }
+
+    window.chartColocacion = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: datosProcesados.etiquetas,
+            datasets: datosProcesados.datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, 
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 15,
+                        font: { size: 12 }
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Tiempo de Colocación por Carrera',
+                    color: '#000',
+                    font: { size: 18, weight: 'bold' },
+                    padding: { bottom: 20 }
+                },
+                datalabels: {
+                    display: false 
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1, // Para que no salgan decimales en personas (0.5 personas no existen)
+                        color: '#666'
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Cantidad de Egresados '
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: '#666'
+                    }
+                }
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false
+            }
+        }
+    });
+}
+
 let todosLosDatos = [];
 let filtroActual = {
     campus: "Todos los campus",
@@ -176,6 +224,7 @@ function seleccionarCampus(valor) {
 
     actualizarDropdowns();
     aplicarFiltros();
+    dropdownCampus.classList.remove('show-dropdown');
 }
 
 function seleccionarFacultad(valor) {
@@ -187,6 +236,7 @@ function seleccionarFacultad(valor) {
 
     actualizarDropdowns();
     aplicarFiltros();
+    dropdownFacultad.classList.remove('show-dropdown');
 }
 
 function seleccionarCarrera(valor) {
@@ -194,11 +244,15 @@ function seleccionarCarrera(valor) {
     document.getElementById('selected-carrera').textContent = valor;
     dropdownCarrera();
     aplicarFiltros();
+    dropdownCarrera.classList.remove('show-dropdown');
 }
 
 function aplicarFiltros() {
     let empleados = 0;
     let noEmpleados = 0;
+
+    const tiemposEjeX = ["De 1ro a 3er semestre", "De 3ro a 5to semestre", "6to semestre", "7mo semestre", "8vo semestre", "9no semestre", "10mo semestre"];
+    const datosGraficaLineas = {};
 
     todosLosDatos.forEach(alumno => {
         const cumpleCampus = filtroActual.campus === "Todos los campus" || 
@@ -211,8 +265,34 @@ function aplicarFiltros() {
                               alumno.carrera.trim().toLowerCase() === filtroActual.carrera.trim().toLowerCase();
 
         if (cumpleCampus && cumpleFacultad && cumpleCarrera) {
-            if (alumno.trabaja && (alumno.trabaja.trim().toLowerCase() === "sí" || alumno.trabaja.trim().toLowerCase() === "si")) {
+            const trabaja=alumno.trabaja && (alumno.trabaja.trim().toLowerCase() === "sí" || alumno.trabaja.trim().toLowerCase() === "si")
+            if (trabaja) {
                 empleados++;
+
+                const carrera = alumno.carrera;
+                let tiempo = alumno.semestre.trim();
+
+                if (!datosGraficaLineas[carrera]) {
+                    datosGraficaLineas[carrera] = {
+                        label: carrera,
+                        data: new Array(tiemposEjeX.length).fill(0),
+                        borderColor: obtenerColorCarrera(carrera),
+                        tension: 0.4,
+                        fill: false
+                    };
+                }
+
+                const categoriasEgresado = ["0-3 meses", "Más de 12 meses", "3-6 meses", "6-9 meses", "9-12 meses", "Antes de egresar"];
+                
+                if (categoriasEgresado.includes(tiempo)) {
+                    tiempo = "10mo semestre"; 
+                }
+
+                const index = tiemposEjeX.indexOf(tiempo);
+                if (index !== -1) {
+                    datosGraficaLineas[carrera].data[index]++;
+                }
+
             } else {
                 noEmpleados++;
             }
@@ -220,6 +300,10 @@ function aplicarFiltros() {
     });
 
     graficaEmpleabilidad(empleados, noEmpleados);
+    graficaColocacion({
+        etiquetas: tiemposEjeX,
+        datasets: Object.values(datosGraficaLineas)
+    });
 }
 
 function actualizarDropdowns() {
@@ -269,3 +353,30 @@ async function restablecerFiltros() {
 document.addEventListener('DOMContentLoaded', () => {
     iniciarDashboard();
 });
+
+function obtenerColorCarrera(carrera) {
+    const coloresUP = [
+        // --- Institucionales y Derivados ---
+        '#88803c', '#710800', '#b3a670', '#4d0500', '#2c3e50', '#a6a6a6', '#d4af37', '#5e0b00',
+        
+        // --- Azules y Verdes (Profesionales) ---
+        '#1abc9c', '#16a085', '#2ecc71', '#27ae60', '#3498db', '#2980b9', '#34495e', '#21618c',
+        '#0e6251', '#1d8348', '#2874a6', '#154360', '#76d7c4', '#7dcea0', '#85c1e9', '#5499c7',
+        
+        // --- Cálidos y Llamativos (Contraste) ---
+        '#e67e22', '#d35400', '#e74c3c', '#c0392b', '#f1c40f', '#f39c12', '#a04000', '#ba4a00',
+        
+        // --- Morados, Rosas y Especiales ---
+        '#9b59b6', '#8e44ad', '#6c3483', '#4a235a', '#fd79a8', '#e84393', '#d63031', '#6d214f',
+        '#b8e994', '#78e08f', '#38ada9', '#079992', '#60a3bc', '#3c6382', '#0a3d62', '#0c2461'
+    ];
+    
+    // Generamos un número (hash) único basado en el nombre de la carrera
+    let hash = 0;
+    for (let i = 0; i < carrera.length; i++) {
+        hash = carrera.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    
+    // Seleccionamos un color del arreglo usando el hash
+    return coloresUP[Math.abs(hash) % coloresUP.length];
+}
