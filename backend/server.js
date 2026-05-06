@@ -292,7 +292,7 @@ app.get('/qsData', async (req, res) => {
             carrera: fila[11],
             facultad: fila[28],
             trabaja: fila[17],
-            sector: fila[24],
+            sector: fila[23],
             semestre: fila[26]
         }));
 

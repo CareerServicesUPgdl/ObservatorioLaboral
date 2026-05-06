@@ -1,14 +1,15 @@
 .dropdown {
     position: relative;
-    width: 250px;
+    width: 230px;
     min-width: 130px;
     margin: 20px;
     font-family: Arial, sans-serif;
 }
 
 .conteiner{
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Cambiado 100% por 250px */
+    gap: 10px;
 }
 
 .dropdown-header {
@@ -65,8 +66,11 @@
 }
 
 .dashboard-container {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr)); 
+    gap: 20px;
     padding: 20px;
+    align-items: start;
 }
 
 .chart-box {
