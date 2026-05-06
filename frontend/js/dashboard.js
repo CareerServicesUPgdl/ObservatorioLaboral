@@ -131,7 +131,7 @@ function aplicarFiltros() {
     let noEmpleados = 0;
 
     const tiemposEjeX = ["De 1ro a 3er semestre", "De 3ro a 5to semestre", "6to semestre", "7mo semestre", "8vo semestre", "9no semestre", "10mo semestre"];
-    const categoriasSector = ["Automotriz", "Comercio", "Consumo", "Educación", "Farmacéutica", "Financiero", "Retail", "Servicios", "Tecnología", "Turismo", "Otro"];
+    const categoriasSector = ["automotriz", "comercio", "consumo", "educación", "farmacéutica", "financiero", "retail", "servicios", "tecnología", "turismo", "otro"];
     
     let alumnosPorSector = new Array(categoriasSector.length).fill(0);
     const datosGraficaLineas = {};
