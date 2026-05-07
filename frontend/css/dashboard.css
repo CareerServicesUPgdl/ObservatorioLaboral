@@ -98,6 +98,7 @@
 
 .chart-colocacion {
     width: 100%;
+    min-width:400px;
     height: 500px; 
     margin: auto;
     background-color: white;
