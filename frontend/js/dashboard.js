@@ -180,15 +180,10 @@ function aplicarFiltros() {
 
                 //grafica colocacion
                 let sectorAlumno = alumno.sector.trim() ? alumno.sector.trim().toLowerCase() : "otro";
-
-                console.log(sectorAlumno)
-
                 let indexSector = categoriasSector.indexOf(sectorAlumno);
 
-                console.log(indexSector);
-
                 if (indexSector === -1) {
-                    indexSector = 1; 
+                    indexSector = 10; 
                 }
 
                 alumnosPorSector[indexSector]++;
@@ -349,7 +344,7 @@ function graficaColocacion(datosProcesados) {
             maintainAspectRatio: false, 
             plugins: {
                 legend: {
-                    position: 'right',
+                    position: 'bottom',
                     labels: {
                         boxWidth: 12,
                         padding: 15,
@@ -425,8 +420,9 @@ function graficaSector(datos) {
                 },
                 title: {
                     display: true,
-                    text: 'Sector Laboral en el que trebajan los estudiantes',
-                    font: { size: 18, weight: 'bold' }
+                    text: 'Sector Laboral en el que trabajan los estudiantes',
+                    font: { size: 18, weight: 'bold' },
+                    color: (0,0,0)
                 },
                 datalabels: {
                     anchor: 'end',
@@ -441,7 +437,7 @@ function graficaSector(datos) {
                     ticks: { stepSize: 1 },
                     title: {
                         display: true,
-                        text: 'Número de Personas'
+                        text: 'Egresados'
                     }
                 },
                 y: { 
