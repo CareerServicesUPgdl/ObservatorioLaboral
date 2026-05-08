@@ -1,40 +1,17 @@
 require("dotenv").config();
+const { Resend } = require('resend');
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
 const app = express();
 const { getQS } = require('./sheets.js');
 
+const resend = new Resend(process.env.resendAPI);
+
 app.use(cors());
 app.use(express.json());
-
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-        type: 'OAuth2',
-        user: process.env.CORREO, // Tu cuenta de gmail
-        clientId: process.env.IDCliente,
-        clientSecret: process.env.SecretoCliente,
-        refreshToken: process.env.refreshToken
-    },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 10000
-});
-
-transporter.verify(function (error, success) {
-  if (error) {
-    console.log("Error en la configuración del transporte:", error);
-  } else {
-    console.log("El servidor está listo para enviar correos");
-  }
-});
 
 mongoose.connect(process.env.mongo)
     .then(() => console.log("Mongo conectado"))
@@ -85,10 +62,10 @@ app.post("/registro", async (req, res) => {
     console.log("enviando correo ...")
     const link = `${process.env.URL}/verificar/${token}`;
 
-    await transporter.sendMail({
-        from: process.env.CORREO,
+    await resend.emails.send({
+        from: 'onboarding@resend.dev',
         to: email,
-        subject: "Verifica tu cuenta",
+        subject: 'Código de verificación',
         html: `
             <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto; padding:20px; border:1px solid #ddd; border-radius:10px; text-align:center;">
 
@@ -114,7 +91,7 @@ app.post("/registro", async (req, res) => {
                 </p>
 
             </div>
-        `
+        `,
     });
 
     console.log("Correo enviado correctamente a:", email);
