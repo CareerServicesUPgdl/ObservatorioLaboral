@@ -420,7 +420,7 @@ function graficaSector(datos) {
                 },
                 title: {
                     display: true,
-                    text: 'Sector Laboral en el que trabajan los estudiantes',
+                    text: 'Sector Laboral en el que trabajan los egresados',
                     font: { size: 18, weight: 'bold' },
                     color: (0,0,0)
                 },
