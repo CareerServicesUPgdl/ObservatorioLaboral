@@ -65,7 +65,7 @@ app.post("/registro", async (req, res) => {
     await resend.emails.send({
         from: 'onboarding@resend.dev',
         to: email,
-        subject: 'Código de verificación',
+        subject: 'Verficación de email - Observatorio Laboral UP',
         html: `
             <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto; padding:20px; border:1px solid #ddd; border-radius:10px; text-align:center;">
 
