@@ -10,28 +10,8 @@ const { getQS } = require('./sheets.js');
 
 const resend = new Resend(process.env.resendAPI);
 
+app.use(cors());
 app.use(express.json());
-
-const dominiosPermitidos = [
-    'https://observatorio-laboral-qfkvu5xmm-careerservicesupgdls-projects.vercel.app',
-    'http://localhost:5500',
-    'http://127.0.0.1:5500'
-];
-
-const corsOptions = {
-    origin: function (origin, callback) {
-        if (dominiosPermitidos.indexOf(origin) !== -1 || !origin) {
-            callback(null, true);
-        } else {
-            callback(new Error('No permitido por CORS'));
-        }
-    },
-    methods: 'GET,POST,PUT,DELETE',
-    allowedHeaders: 'Content-Type,Authorization',
-    credentials: true
-};
-
-app.use(cors(corsOptions));
 
 //Para conectarse a mongo, la base de datos de los usuarios
 mongoose.connect(process.env.mongo)
