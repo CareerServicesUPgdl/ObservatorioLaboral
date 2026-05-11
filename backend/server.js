@@ -10,7 +10,6 @@ const { getQS } = require('./sheets.js');
 
 const resend = new Resend(process.env.resendAPI);
 
-app.use(cors());
 app.use(express.json());
 
 const dominiosPermitidos = [
