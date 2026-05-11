@@ -13,11 +13,13 @@ const resend = new Resend(process.env.resendAPI);
 app.use(cors());
 app.use(express.json());
 
+//Para conectarse a mongo, la base de datos de los usuarios
 mongoose.connect(process.env.mongo)
     .then(() => console.log("Mongo conectado"))
     .catch(err => console.log(err));
 
 
+//Como se van a guardar los usuarios
 const usuarioSchema = new mongoose.Schema({
     nombre: String,
     apellido: String,
@@ -30,14 +32,16 @@ const usuarioSchema = new mongoose.Schema({
     }
 });
 
+//creamos el modelo de usuario
 const Usuario = mongoose.model("Usuario", usuarioSchema);
 
+//Aqui registramos el usuario, esto guarda al usuario en la base de datos y le manda el correo de verificacion
 app.post("/registro", async (req, res) => {
     const { email, password, nombre, apellido } = req.body;
     console.log(email, nombre, apellido);
 
     try {
-        const hash = await bcrypt.hash(password, 10);
+        const hash = await bcrypt.hash(password, 10); //encriptamos la contraseña
 
         const usuario = await Usuario.findOne({ email });
 
@@ -49,7 +53,7 @@ app.post("/registro", async (req, res) => {
             apellido,
             email,
             password: hash,
-            cuenta: "Alumno"
+            cuenta: "Alumno" //simpre va a ser alumno. hasta que algun administrador lo cambie
         });
 
         await nuevoUsuario.save();
@@ -60,9 +64,9 @@ app.post("/registro", async (req, res) => {
         { expiresIn: "1d" }
     );
     console.log("enviando correo ...")
-    const link = `${process.env.URL}/verificar/${token}`;
+    const link = `${process.env.URL}/verificar/${token}`; //aqui se crea el link para verficar al usuairio
 
-    await resend.emails.send({
+    await resend.emails.send({ //aqui se manda el correo
         from: 'onboarding@resend.dev',
         to: email,
         subject: 'Verficación de email - Observatorio Laboral UP',
@@ -104,11 +108,12 @@ app.post("/registro", async (req, res) => {
     }
 });
 
+//Aqui se hace el login, se verifica que el usuario exista, que la contraseña sea correcta y que el correo este verificado
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const usuario = await Usuario.findOne({ email });
+        const usuario = await Usuario.findOne({ email }); //aqui se busca al usuario por su correo
 
         if (!usuario) {
             return res.status(404).json({ error: "Usuario no existe" });
@@ -126,6 +131,7 @@ app.post("/login", async (req, res) => {
             });
         }
 
+        //creamos un token, pra que no se pueda entrar a la pagina sin estar logueado, el token tiene la informacion del usuario y un tiempo de expiracion
         const token = jwt.sign(
             {
                 id: usuario._id,
@@ -145,10 +151,12 @@ app.post("/login", async (req, res) => {
     }
 });
 
+//Aqui se inicia el servidor
 app.listen(process.env.port, () => {
     console.log(`Servidor en ${process.env.URL}`);
 });
 
+//aqui se verifica que el usuario tenga token
 function verificarToken(req, res, next) {
     const token = req.headers["authorization"];
 
@@ -165,6 +173,7 @@ function verificarToken(req, res, next) {
     }
 }
 
+//Aqui se obtiene el perfil del usuario
 app.get("/perfil", verificarToken, (req, res) => {
     res.json({
         usuario: req.usuario,
@@ -172,6 +181,7 @@ app.get("/perfil", verificarToken, (req, res) => {
     });
 });
 
+//Aqui se obtiene la lista de usuarios, solo los administradores pueden acceder a esta ruta
 app.get("/usuarios", verificarToken, async (req, res) => {
     try {
         const usuarios = await Usuario.find();
@@ -182,6 +192,7 @@ app.get("/usuarios", verificarToken, async (req, res) => {
     }
 });
 
+//cuando se verifica el correo se actualiza el usuario y te redirige a la pagina de login
 app.get("/verificar/:token", async (req, res) => {
 
     try {
@@ -194,7 +205,7 @@ app.get("/verificar/:token", async (req, res) => {
             verificado: true
         });
 
-        res.redirect("https://observatorio-laboral-up.vercel.app/html/Login.html?msg=verificado");
+        res.redirect("https://observatorio-laboral.vercel.app/html/Login.html?msg=verificado");
 
     } catch (error) {
         res.send("Link inválido o expirado");
@@ -202,6 +213,7 @@ app.get("/verificar/:token", async (req, res) => {
 
 });
 
+//Aqui se elimina un usuario, solo los administradores pueden eliminar usuarios
 app.delete("/usuarios/:id", verificarToken, async (req, res) => {
     try {
         if (req.usuario.cuenta !== "Admin") {
@@ -222,6 +234,7 @@ app.delete("/usuarios/:id", verificarToken, async (req, res) => {
     }
 });
 
+//Aqui se actualiza el rol de un usuario, solo los administradores pueden cambiar el rol de un usuario
 app.put("/usuarios/cuenta/:id", verificarToken, async (req, res) => {
     try {
         const { id } = req.params;
