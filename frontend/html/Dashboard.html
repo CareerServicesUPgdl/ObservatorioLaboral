@@ -103,6 +103,26 @@
                 </ul>
             </div>
 
+            <div class="dropdown" id="dropdownPeriodo">
+                <div class="dropdown-header" onclick="dropdownPeriodo()">
+                    <span id="selected-periodo">Todos los periodos</span>
+                    <span>▼</span>
+                </div>
+                <ul class="dropdown-options" id="dropdownOptionsPeriodo">
+                    <li onclick="seleccionarPeriodo('Todas los periodos')">Todos los periodos</li>
+                </ul>
+            </div>
+
+            <div class="dropdown" id="dropdownContrato">
+                <div class="dropdown-header" onclick="dropdownContrato()">
+                    <span id="selected-contrato">Todos los contratos</span>
+                    <span>▼</span>
+                </div>
+                <ul class="dropdown-options" id="dropdownOptionsContrato">
+                    <li onclick="seleccionarContrato('Todas los contratos')">Todos los contratos</li>
+                </ul>
+            </div>
+
             <div class="conteiner">
                 <button onclick="restablecerFiltros()" class="restablecer">Restablecer filtros</button>
             </div>

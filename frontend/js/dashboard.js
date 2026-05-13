@@ -59,6 +59,14 @@ function dropdownCarrera() {
     document.getElementById("dropdownOptionsCarrera").classList.toggle("show-dropdown");
 }
 
+function dropdownPeriodo() {
+    document.getElementById("dropdownOptionsPeriodo").classList.toggle("show-dropdown");
+}
+
+function dropdownContrato() {
+    document.getElementById("dropdownOptionsContrato").classList.toggle("show-dropdown");
+}
+
 function seleccionarCampus(valor) {
     filtroActual.campus = valor;
     document.getElementById('selected-campus').textContent = valor;
@@ -80,6 +88,12 @@ function seleccionarFacultad(valor) {
     filtroActual.carrera = "Todas las carreras";
     document.getElementById('selected-carrera').textContent = "Todas las carreras";
 
+    filtroActual.periodo = "Todas los periodos";
+    document.getElementById('selected-periodo').textContent = "Todos los periodos";
+
+    filtroActual.contrato = "Todos los contratos";
+    document.getElementById('selected-contrato').textContent = "Todos los contratos";
+
     actualizarDropdowns();
     aplicarFiltros();
 }
@@ -87,7 +101,33 @@ function seleccionarFacultad(valor) {
 function seleccionarCarrera(valor) {
     filtroActual.carrera = valor;
     document.getElementById('selected-carrera').textContent = valor;
-    dropdownCarrera();
+
+    filtroActual.periodo = "Todas los periodos";
+    document.getElementById('selected-periodo').textContent = "Todos los periodos";
+
+    filtroActual.contrato = "Todos los contratos";
+    document.getElementById('selected-contrato').textContent = "Todos los contratos";
+
+    actualizarDropdowns();
+    aplicarFiltros();
+}
+
+function seleccionarPeriodo(valor) {
+    filtroActual.periodo = valor;
+    document.getElementById('selected-periodo').textContent = valor;
+
+    filtroActual.contrato = "Todos los contratos";
+    document.getElementById('selected-contrato').textContent = "Todos los contratos";
+
+    actualizarDropdowns();
+    aplicarFiltros();
+}
+
+function seleccionarContrato(valor) {
+    filtroActual.contrato = valor;
+    document.getElementById('selected-contrato').textContent = valor;
+    
+    actualizarDropdowns();
     aplicarFiltros();
 }
 
@@ -105,6 +145,14 @@ window.onclick = function(event) {
         if (dropdownCarrera.classList.contains('show-dropdown')) {
             dropdownCarrera.classList.remove('show-dropdown');
         }
+        const dropdownContrato = document.getElementById("dropdownOptionsContrato");
+        if (dropdownContrato.classList.contains('show-dropdown')) {
+            dropdownContrato.classList.remove('show-dropdown');
+        }
+        const dropdownPeriodo = document.getElementById("dropdownOptionsPeriodo");
+        if (dropdownPeriodo.classList.contains('show-dropdown')) {
+            dropdownPeriodo.classList.remove('show-dropdown');
+        }
     }
 }
 
@@ -112,7 +160,9 @@ let todosLosDatos = [];
 let filtroActual = {
     campus: "Todos los campus",
     facultad: "Todas las Facultades",
-    carrera: "Todas las carreras"
+    carrera: "Todas las carreras",
+    contrato: "Todos los contratos",
+    periodo: "Todos los periodos"
 };
 
 async function iniciarDashboard() {
@@ -146,7 +196,13 @@ function aplicarFiltros() {
         const cumpleCarrera = filtroActual.carrera === "Todas las carreras" || 
                               alumno.carrera.trim().toLowerCase() === filtroActual.carrera.trim().toLowerCase();
 
-        if (cumpleCampus && cumpleFacultad && cumpleCarrera) {
+        const cumpleContrato = filtroActual.contrato === "Todos los contratos" || 
+                               alumno.tipoContrato.trim().toLowerCase() === filtroActual.contrato.trim().toLowerCase();
+
+        const cumplePeriodo = filtroActual.periodo === "Todos los periodos" || 
+                              alumno.egreso.trim().toLowerCase() === filtroActual.periodo.trim().toLowerCase();
+
+        if (cumpleCampus && cumpleFacultad && cumpleCarrera && cumpleContrato && cumplePeriodo) {
             const trabaja=alumno.trabaja && (alumno.trabaja.trim().toLowerCase() === "sí" || alumno.trabaja.trim().toLowerCase() === "si")
             if (trabaja) {
                 //grafica empleabilidad
@@ -246,12 +302,49 @@ function actualizarDropdowns() {
             listaCarreras.appendChild(li);
         }
     });
+
+    const datosPorCarrera = datosPorFacultad.filter(alumno => {
+        return filtroActual.carrera === "Todas las carreras" || 
+               alumno.carrera.trim() === filtroActual.carrera.trim();
+    });
+
+    const contratosDisponibles = [...new Set(datosPorCarrera.map(a => a.tipoContrato))].sort();
+    const listaContratos = document.getElementById('dropdownOptionsContrato');
+
+    listaContratos.innerHTML = `<li onclick="seleccionarContrato('Todos los contratos')">Todos los contratos</li>`;
+    contratosDisponibles.forEach(cont => {
+        if(cont) {
+            const li = document.createElement('li');
+            li.textContent = cont;
+            li.onclick = () => seleccionarContrato(cont);
+            listaContratos.appendChild(li);
+        }
+    });
+
+    const periodosDisponibles = [...new Set(datosPorCarrera.map(a => a.egreso))].sort();
+    const listaPeriodos = document.getElementById('dropdownOptionsPeriodo');
+
+    listaPeriodos.innerHTML = `<li onclick="seleccionarPeriodo('Todos los periodos')">Todos los periodos</li>`;
+    periodosDisponibles.forEach(per => {
+        if(per) {
+            const li = document.createElement('li');
+            li.textContent = per;
+            li.onclick = () => seleccionarPeriodo(per);
+            listaPeriodos.appendChild(li);
+        }
+    });
+
+    if(filtroActual.periodo == "Todas los periodos") {
+        seleccionarPeriodo("Todos los periodos");
+    }
 }
 
 async function restablecerFiltros() {
     seleccionarCampus("Todos los campus");
     seleccionarFacultad("Todas las Facultades");
     seleccionarCarrera("Todas las carreras");
+    seleccionarContrato("Todos los contratos");
+    seleccionarPeriodo("Todos los periodos");
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -422,7 +515,7 @@ function graficaSector(datos) {
                     display: true,
                     text: 'Sector Laboral en el que trabajan los egresados',
                     font: { size: 18, weight: 'bold' },
-                    color: (0,0,0)
+                    color: '#000'
                 },
                 datalabels: {
                     anchor: 'end',

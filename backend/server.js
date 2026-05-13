@@ -283,7 +283,10 @@ app.get('/qsData', async (req, res) => {
             facultad: fila[28],
             trabaja: fila[17],
             sector: fila[23],
-            semestre: fila[26]
+            semestre: fila[26],
+            tipoContrato: fila[24],
+            salario: fila[25],
+            egreso: fila[29]
         }));
 
         res.json(data);
