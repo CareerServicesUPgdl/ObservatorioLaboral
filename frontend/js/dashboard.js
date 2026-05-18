@@ -180,11 +180,13 @@ function aplicarFiltros() {
     let empleados = 0;
     let noEmpleados = 0;
 
-    const tiemposEjeX = ["De 1ro a 3er semestre", "De 3ro a 5to semestre", "6to semestre", "7mo semestre", "8vo semestre", "9no semestre", "10mo semestre"];
+    const sueldos=["Prefiero no responder","Menos de $5,000","$5,000 a $10,000","$10,001 a $15,000","$15,001 a $20,000","$10,000-$20,000","$20,001 a $25,000","$25,001 a $30,000","$20,001-$30,000","$30,001 a $35,000","$35,001 a $40,000","$30,001-$40,000","$40,001-$50,000","Más de $40,000","Más de $50,000"];
+    const tiempos = ["De 1ro a 3er semestre", "De 3ro a 5to semestre", "6to semestre", "7mo semestre", "8vo semestre", "9no semestre", "10mo semestre"];
     const categoriasSector = ["automotriz", "comercio", "consumo", "educación", "farmacéutica", "financiero", "retail", "servicios", "tecnología", "turismo", "otro"];
     
     let alumnosPorSector = new Array(categoriasSector.length).fill(0);
-    const datosGraficaLineas = {};
+    const datosGraficaTiempo = {};
+    const datosGraficaSueldos = {};
 
     todosLosDatos.forEach(alumno => {
         const cumpleCampus = filtroActual.campus === "Todos los campus" || 
@@ -212,10 +214,18 @@ function aplicarFiltros() {
                 const carrera = alumno.carrera;
                 let tiempo = alumno.semestre.trim();
 
-                if (!datosGraficaLineas[carrera]) {
-                    datosGraficaLineas[carrera] = {
+                if (!datosGraficaTiempo[carrera]) {
+                    datosGraficaTiempo[carrera] = {
                         label: carrera,
-                        data: new Array(tiemposEjeX.length).fill(0),
+                        data: new Array(tiempos.length).fill(0),
+                        borderColor: obtenerColorCarrera(carrera),
+                        backgroundColor: obtenerColorCarrera(carrera),
+                        tension: 0.4,
+                        fill: false
+                    };
+                    datosGraficaSueldos[carrera] = {
+                        label: carrera,
+                        data: new Array(sueldos.length).fill(0),
                         borderColor: obtenerColorCarrera(carrera),
                         backgroundColor: obtenerColorCarrera(carrera),
                         tension: 0.4,
@@ -229,9 +239,9 @@ function aplicarFiltros() {
                     tiempo = "10mo semestre"; 
                 }
 
-                const index = tiemposEjeX.indexOf(tiempo);
+                const index = tiempos.indexOf(tiempo);
                 if (index !== -1) {
-                    datosGraficaLineas[carrera].data[index]++;
+                    datosGraficaTiempo[carrera].data[index]++;
                 }
 
                 //grafica colocacion
@@ -244,6 +254,26 @@ function aplicarFiltros() {
 
                 alumnosPorSector[indexSector]++;
 
+                //grafica sueldos
+                const sueldoAlumno = alumno.salario.trim() ? alumno.salario.trim() : "Prefiero no responder";
+                let indexSueldo = sueldos.indexOf(sueldoAlumno);
+
+                if (sueldoAlumno.trim() === "Menor a $10000" || sueldoAlumno.trim() === "Menor a $10,000") {
+                    indexSueldo = sueldos.indexOf("$5,000 a $10,000");
+                } else if (sueldoAlumno.trim() === "$10,000-$20,001" || sueldoAlumno.trim() === "$10000-$20000") {
+                    indexSueldo = sueldos.indexOf("$10,000-$20,000");
+                } else if (sueldoAlumno.trim() === "$20001-$30000"){
+                    indexSueldo = sueldos.indexOf("$20,001-$30,000");
+                } else if (sueldoAlumno.trim() === "$30001-$40000"  || sueldoAlumno.trim() === "$30,000-$40,001"){
+                    indexSueldo = sueldos.indexOf("$30,001-$40,000");
+                } else if (sueldoAlumno.trim() === "$40000-$50000"){
+                    indexSueldo = sueldos.indexOf("$40,001-$50,000");
+                } else if (sueldoAlumno.trim() === "Más de $51,000"){
+                    indexSueldo = sueldos.indexOf("Más de $50,000");
+                }
+
+                datosGraficaSueldos[carrera].data[indexSueldo]++;
+
             } else {
                 noEmpleados++;
             }
@@ -252,8 +282,8 @@ function aplicarFiltros() {
 
     graficaEmpleabilidad(empleados, noEmpleados);
     graficaColocacion({
-        etiquetas: tiemposEjeX,
-        datasets: Object.values(datosGraficaLineas)
+        etiquetas: tiempos,
+        datasets: Object.values(datosGraficaTiempo)
     });
     graficaSector({
         etiquetas: categoriasSector,
@@ -263,7 +293,10 @@ function aplicarFiltros() {
             backgroundColor: '#88803c'
         }]
     });
-    console.log(alumnosPorSector)
+    graficaSueldos({
+        etiquetas: sueldos,
+        datasets: Object.values(datosGraficaSueldos)
+    });
 }
 
 function actualizarDropdowns() {
@@ -540,6 +573,148 @@ function graficaSector(datos) {
                     },
                     grid: { display: false }
                 }
+            }
+        }
+    });
+}
+
+function graficaSueldos(datosProcesados) {
+    const canvas = document.getElementById('graficaSueldos');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+
+    if (window.chartSueldos) {
+        window.chartSueldos.destroy();
+    }
+
+    window.chartSueldos = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: datosProcesados.etiquetas,
+            datasets: datosProcesados.datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, 
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 15,
+                        font: { size: 12 }
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Sueldos por Carrera',
+                    color: '#000',
+                    font: { size: 18, weight: 'bold' },
+                    padding: { bottom: 20 }
+                },
+                datalabels: {
+                    display: false 
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        color: '#666'
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Cantidad de Egresados '
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: '#666'
+                    }
+                }
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false
+            }
+        }
+    });
+}
+
+function graficaSueldos(datosProcesados) {
+    const canvas = document.getElementById('graficaSueldos');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+
+    if (window.chartSueldos) {
+        window.chartSueldos.destroy();
+    }
+
+    window.chartSueldos = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: datosProcesados.etiquetas,
+            datasets: datosProcesados.datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, 
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 15,
+                        font: { size: 12 }
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Sueldos por Carrera',
+                    color: '#000',
+                    font: { size: 18, weight: 'bold' },
+                    padding: { bottom: 20 }
+                },
+                datalabels: {
+                    display: false 
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        color: '#666'
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Cantidad de Egresados '
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: '#666'
+                    }
+                }
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false
             }
         }
     });
