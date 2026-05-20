@@ -7,9 +7,7 @@
     <link rel="icon" href="../assets/Logo.png" type="image/png">
     <title>Observatorio Laboral Up</title>
     <link rel="stylesheet" href="../css/sidebar.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
     <script src="../js/config.js"></script>
-    <script src="../js/dashboard.js"></script>
 </head>
 
 <body>
@@ -22,7 +20,7 @@
                 </div>
             </li>
 
-            <li class="sidebarElement seleccionado">
+            <li class="sidebarElement">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="sidebarIcon"
                     viewBox="0 0 16 16">
                     <path
@@ -33,7 +31,7 @@
                 </div>
             </li>
 
-            <li class="sidebarElement">
+            <li class="sidebarElement seleccionado">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="sidebarIcon"
                     class="bi bi-clock-history" viewBox="0 0 16 16">
                     <path
@@ -47,9 +45,9 @@
                 </div>
             </li>
 
-            <li class="sidebarElement ocultar" id="administracion">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                    class="bi bi-gear sidebarIcon" viewBox="0 0 16 16">
+            <li class="sidebarElement" id="administracion">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-gear sidebarIcon"
+                    viewBox="0 0 16 16">
                     <path
                         d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0" />
                     <path
@@ -77,94 +75,10 @@
     </aside>
 
     <div class="main-content">
-        <div>
-            <h1 class="topTitle" id="topTitle">Dashboard</h1>
-            <h3>Bienvenid@, <span id="nombre"></span> <span id="apellido"></span></h3>
-        </div>
-
-        <div class="conteiner">
-            <div class="dropdown" id="dropdownCampus">
-                <div class="dropdown-header" onclick="dropdownCampus()">
-                    <span id="selected-campus">Todos los campus</span>
-                    <span>▼</span>
-                </div>
-                <ul class="dropdown-options" id="dropdownOptionsCampus">
-                    <li onclick="seleccionarCampus('Todos los campus')">Todos los campus</li>
-                    <li onclick="seleccionarCampus('Aguascalientes')">Aguascalientes</li>
-                    <li onclick="seleccionarCampus('Guadalajara')">Guadalajara</li>
-                    <li onclick="seleccionarCampus('Ciudad UP')">Ciudad UP</li>
-                    <li onclick="seleccionarCampus('Mixcoac')">Mixcoac</li>
-                </ul>
-            </div>
-
-            <div class="dropdown" id="dropdownFacultad">
-                <div class="dropdown-header" onclick="dropdownFacultad()">
-                    <span id="selected-facultad">Todas las Facultades</span>
-                    <span>▼</span>
-                </div>
-                <ul class="dropdown-options" id="dropdownOptionsFacultad">
-                    <li onclick="seleccionarFacultad('Todas las Facultades')">Todas las Facultades</li>
-                </ul>
-            </div>
-
-            <div class="dropdown" id="dropdownCarrera">
-                <div class="dropdown-header" onclick="dropdownCarrera()">
-                    <span id="selected-carrera">Todas las carreras</span>
-                    <span>▼</span>
-                </div>
-                <ul class="dropdown-options" id="dropdownOptionsCarrera">
-                    <li onclick="seleccionarCarrera('Todas las carreras')">Todas las carreras</li>
-                </ul>
-            </div>
-
-            <div class="dropdown" id="dropdownPeriodo">
-                <div class="dropdown-header" onclick="dropdownPeriodo()">
-                    <span id="selected-periodo">Todos los periodos</span>
-                    <span>▼</span>
-                </div>
-                <ul class="dropdown-options" id="dropdownOptionsPeriodo">
-                    <li onclick="seleccionarPeriodo('Todas los periodos')">Todos los periodos</li>
-                </ul>
-            </div>
-
-            <div class="dropdown" id="dropdownContrato">
-                <div class="dropdown-header" onclick="dropdownContrato()">
-                    <span id="selected-contrato">Todos los contratos</span>
-                    <span>▼</span>
-                </div>
-                <ul class="dropdown-options" id="dropdownOptionsContrato">
-                    <li onclick="seleccionarContrato('Todas los contratos')">Todos los contratos</li>
-                </ul>
-            </div>
-
-            <div class="conteiner">
-                <button onclick="restablecerFiltros()" class="restablecer">Restablecer filtros</button>
-            </div>
-        </div>
-
-        <div class="dashboard-container display">
-            <div class="chart-sector">
-                <canvas id="graficaSector"></canvas>
-            </div>
-            <div class="chart-box">
-                <canvas id="empleabilidad"></canvas>
-            </div>
-        </div>
-        <div class="dashboard-container">
-            <div class="chart-colocacion">
-                <canvas id="graficaColocacion"></canvas>
-            </div>
-        </div>
-        <div class="dashboard-container">
-            <div class="chart-colocacion">
-                <canvas id="graficaSueldos"></canvas>
-            </div>
-        </div>
-
+        
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="../js/historial.js"></script>
 </body>
 
 </html>
