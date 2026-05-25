@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const app = express();
-const { getQS } = require('./sheets.js');
+const { getSheet } = require('./sheets.js');
 
 const resend = new Resend(process.env.resendAPI);
 
@@ -272,8 +272,7 @@ app.put("/usuarios/cuenta/:id", verificarToken, async (req, res) => {
 //Base de datos del QS
 app.get('/qsData', async (req, res) => {
     try {
-        const SPREADSHEET_ID = process.env.IDSheets;
-        const rows = await getQS(SPREADSHEET_ID, "'Respuestas de formulario 1'!A2:AD3600");
+        const rows = await getSheet(process.env.IDSheetsQS, "'Respuestas de formulario 1'!A2:AD3600");
 
         if (!rows || rows.length === 0) return res.status(404).json([]);
 
@@ -291,7 +290,51 @@ app.get('/qsData', async (req, res) => {
 
         res.json(data);
     } catch (error) {
-        console.error("--- ERROR EN EL SERVIDOR ---");
+        console.error("--- ERROR EN EL SERVIDOR1 ---");
+        console.error(error.message);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//Base de datos del Semaforo Laboral junio 2017
+app.get('/Junio2017Data', async (req, res) => {
+    try {
+        const rows = await getSheet(process.env.IDSheets2017, "'JUNIO'!E2:Z372");
+
+        if (!rows || rows.length === 0) return res.status(404).json([]);
+
+        const data = rows.map(fila => ({
+            carrera: fila[3],
+            trabaja1: fila[7],
+            trabaja2: fila[12],
+            trabaja3: fila[17]
+        }));
+
+        res.json(data);
+    } catch (error) {
+        console.error("--- ERROR EN EL SERVIDOR2 ---");
+        console.error(error.message);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//Base de datos del Semaforo Laboral diciembre 2017
+app.get('/Diciembre2017Data', async (req, res) => {
+    try {
+        const rows = await getSheet(process.env.IDSheets2017, "'DIC'!A2:X205");
+
+        if (!rows || rows.length === 0) return res.status(404).json([]);
+
+        const data = rows.map(fila => ({
+            carrera: fila[2],
+            trabaja1: fila[9],
+            trabaja2: fila[14],
+            trabaja3: fila[20]
+        }));
+
+        res.json(data);
+    } catch (error) {
+        console.error("--- ERROR EN EL SERVIDOR3 ---");
         console.error(error.message);
         res.status(500).json({ error: error.message });
     }

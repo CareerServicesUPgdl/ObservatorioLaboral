@@ -384,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
     iniciarDashboard();
 });
 
-function obtenerColorCarrera(carrera) {
+export function obtenerColorCarrera(carrera) {
     const coloresUP = [
         '#88803c', '#710800', '#b3a670', '#4d0500', '#2c3e50', '#a6a6a6', '#d4af37', '#5e0b00',
         '#1abc9c', '#16a085', '#2ecc71', '#27ae60', '#3498db', '#2980b9', '#34495e', '#21618c',
@@ -573,77 +573,6 @@ function graficaSector(datos) {
                     },
                     grid: { display: false }
                 }
-            }
-        }
-    });
-}
-
-function graficaSueldos(datosProcesados) {
-    const canvas = document.getElementById('graficaSueldos');
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-
-    if (window.chartSueldos) {
-        window.chartSueldos.destroy();
-    }
-
-    window.chartSueldos = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: datosProcesados.etiquetas,
-            datasets: datosProcesados.datasets
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false, 
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        boxWidth: 12,
-                        padding: 15,
-                        font: { size: 12 }
-                    }
-                },
-                title: {
-                    display: true,
-                    text: 'Sueldos por Carrera',
-                    color: '#000',
-                    font: { size: 18, weight: 'bold' },
-                    padding: { bottom: 20 }
-                },
-                datalabels: {
-                    display: false 
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1,
-                        color: '#666'
-                    },
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.05)'
-                    },
-                    title: {
-                        display: true,
-                        text: 'Cantidad de Egresados '
-                    }
-                },
-                x: {
-                    grid: {
-                        display: false
-                    },
-                    ticks: {
-                        color: '#666'
-                    }
-                }
-            },
-            interaction: {
-                mode: 'index',
-                intersect: false
             }
         }
     });

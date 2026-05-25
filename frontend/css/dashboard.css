@@ -8,7 +8,7 @@
 
 .conteiner{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Cambiado 100% por 250px */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 10px;
 }
 
@@ -30,7 +30,6 @@
     background-color: rgb(98, 0, 0);
     color: white;
 }
-
 
 .dropdown-options {
     position: absolute;

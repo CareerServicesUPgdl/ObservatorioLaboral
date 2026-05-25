@@ -5,7 +5,7 @@ const auth = new google.auth.GoogleAuth({
     scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
 });
 
-async function getQS(spreadsheetId, range) {
+async function getSheet(spreadsheetId, range) {
     const client = await auth.getClient();
     const sheets = google.sheets({ version: 'v4', auth: client });
     
@@ -17,4 +17,4 @@ async function getQS(spreadsheetId, range) {
     return response.data.values;
 }
 
-module.exports = { getQS };
+module.exports = { getSheet };

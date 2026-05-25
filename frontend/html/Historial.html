@@ -7,6 +7,7 @@
     <link rel="icon" href="../assets/Logo.png" type="image/png">
     <title>Observatorio Laboral Up</title>
     <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
     <script src="../js/config.js"></script>
 </head>
 
@@ -75,10 +76,48 @@
     </aside>
 
     <div class="main-content">
+        <h1>Historial</h1>
+
+        <div class="conteiner">
+            <div class="dropdown" id="dropdownPeriodo">
+                <div class="dropdown-header" onclick="dropdownPeriodo()">
+                    <span id="selected-periodo">Todos los períodos</span>
+                    <span>▼</span>
+                </div>
+                <ul class="dropdown-options" id="dropdownOptionsPeriodo">
+                    <li onclick="seleccionarPeriodo('Todos los períodos')">Todos los períodos</li>
+                    <li onclick="seleccionarPeriodo('Junio 2017')">Junio 2017</li>
+                    <li onclick="seleccionarPeriodo('Diciembre 2017')">Diciembre 2017</li>
+                </ul>
+            </div>
+
+            <div class="dropdown" id="dropdownCarrera">
+                <div class="dropdown-header" onclick="dropdownCarrera()">
+                    <span id="selected-carrera">Todas las carreras</span>
+                    <span>▼</span>
+                </div>
+                <ul class="dropdown-options" id="dropdownOptionsCarrera">
+                    <li onclick="seleccionarCarrera('Todas las carreras')">Todas las carreras</li>
+                </ul>
+            </div>
+
+            <div class="conteiner">
+                <button onclick="restablecerFiltros()" class="restablecer">Restablecer filtros</button>
+            </div>
+        </div>
+
+        <div class="dashboard-container">
+            <div class="chart-colocacion">
+                <canvas id="tiempoColocacion"></canvas>
+            </div>
+        </div>
         
     </div>
 
-    <script src="../js/historial.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script type="module" src="../js/dashboard.js"></script>
+    <script type="module" src="../js/historial.js"></script>
 </body>
 
 </html>
