@@ -7,7 +7,6 @@ if (!token) {
 function logout() {
     localStorage.removeItem("token");
     window.location.href = "../html/Login.html";
-    
 }
 
 fetch(`${API_URL}/perfil`, {
@@ -157,6 +156,10 @@ function aplicarFiltros() {
 
         const carrera = alumno.carrera.trim().toLowerCase();
 
+        const trabaja1 = (alumno.trabaja1 || "").trim().toLowerCase();
+        const trabaja2 = (alumno.trabaja2 || "").trim().toLowerCase();
+        const trabaja3 = (alumno.trabaja3 || "").trim().toLowerCase();
+
         if (cumpleCarrera) {
             if (!datosGraficaTiempo[carrera]) {
                 datosGraficaTiempo[carrera] = {
@@ -169,29 +172,17 @@ function aplicarFiltros() {
                 };
             }
 
-            if (alumno.trabaja1.trim().toLowerCase() === "Sí") {
-                const carrera = alumno.carrera;
-
-                if (!datosGraficaTiempo[carrera]) {
-                    datosGraficaTiempo[carrera] = {
-                        label: carrera,
-                        data: new Array(tiempos.length).fill(0),
-                        borderColor: obtenerColorCarrera(carrera),
-                        backgroundColor: obtenerColorCarrera(carrera),
-                        tension: 0.4,
-                        fill: false
-                    };
-                }
+            if (trabaja1 === "sí" || trabaja1 === "si") {
 
                 datosGraficaTiempo[carrera].data[0]++;
 
-            } else if (alumno.trabaja1.trim().toLowerCase() !== "Sí" && alumno.trabaja2.trim().toLowerCase() === "Sí") {
+            } else if ((trabaja1 !== "sí" && trabaja1 !== "si") && (trabaja2 === "sí" || trabaja2 === "si")) {
 
-                datosGraficaTiempo[alumno.carrera].data[1]++;
+                datosGraficaTiempo[carrera].data[1]++;
 
-            } else if (alumno.trabaja3.trim().toLowerCase() === "Sí" && alumno.trabaja2.trim().toLowerCase() !== "Sí" && alumno.trabaja1.trim().toLowerCase() !== "Sí") {
+            } else if ((trabaja3 === "sí" || trabaja3 === "si") && (trabaja2 !== "sí" && trabaja2 !== "si") && (trabaja1 !== "sí" && trabaja1 !== "si")) {
 
-                datosGraficaTiempo[alumno.carrera].data[2]++;
+                datosGraficaTiempo[carrera].data[2]++;
 
             }
         }
@@ -202,18 +193,17 @@ function aplicarFiltros() {
     });
 }
 
-import { obtenerColorCarrera } from "./dashboard.js";
 function graficaColocacion(datosProcesados) {
-    const canvas = document.getElementById('timepoColocacion');
+    const canvas = document.getElementById('tiempoColocacion');
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
 
-    if (window.chartColocacion) {
-        window.chartColocacion.destroy();
+    if (window.chartTiempo) {
+        window.chartTiempo.destroy();
     }
 
-    window.chartColocacion = new Chart(ctx, {
+    window.chartTiempo = new Chart(ctx, {
         type: 'line',
         data: {
             labels: datosProcesados.etiquetas,
@@ -272,6 +262,23 @@ function graficaColocacion(datosProcesados) {
             }
         }
     });
+}
+
+function obtenerColorCarrera(carrera) {
+    const coloresUP = [
+        '#88803c', '#710800', '#b3a670', '#4d0500', '#2c3e50', '#a6a6a6', '#d4af37', '#5e0b00',
+        '#1abc9c', '#16a085', '#2ecc71', '#27ae60', '#3498db', '#2980b9', '#34495e', '#21618c',
+        '#0e6251', '#1d8348', '#2874a6', '#154360', '#76d7c4', '#7dcea0', '#85c1e9', '#5499c7',
+        '#e67e22', '#d35400', '#e74c3c', '#c0392b', '#f1c40f', '#f39c12', '#a04000', '#ba4a00',
+        '#9b59b6', '#8e44ad', '#6c3483', '#4a235a', '#fd79a8', '#e84393', '#d63031', '#6d214f',
+        '#b8e994', '#78e08f', '#38ada9', '#079992', '#60a3bc', '#3c6382', '#0a3d62', '#0c2461'
+    ];
+
+    let hash = 0;
+    for (let i = 0; i < carrera.length; i++) {
+        hash = carrera.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return coloresUP[Math.abs(hash) % coloresUP.length];
 }
 
 document.addEventListener('DOMContentLoaded', () => {

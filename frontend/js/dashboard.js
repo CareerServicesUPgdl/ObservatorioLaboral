@@ -384,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
     iniciarDashboard();
 });
 
-export function obtenerColorCarrera(carrera) {
+function obtenerColorCarrera(carrera) {
     const coloresUP = [
         '#88803c', '#710800', '#b3a670', '#4d0500', '#2c3e50', '#a6a6a6', '#d4af37', '#5e0b00',
         '#1abc9c', '#16a085', '#2ecc71', '#27ae60', '#3498db', '#2980b9', '#34495e', '#21618c',
