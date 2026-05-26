@@ -323,7 +323,7 @@ function actualizarDropdowns() {
                alumno.facultad.trim() === filtroActual.facultad.trim();
     });
 
-    const carrerasDisponibles = [...new Set(datosPorFacultad.map(a => a.carrera))].sort();
+    const carrerasDisponibles = [...new Set(datosPorFacultad.map(a => a.carrera.trim()))].sort();
     const listaCarreras = document.getElementById('dropdownOptionsCarrera');
 
     listaCarreras.innerHTML = `<li onclick="seleccionarCarrera('Todas las carreras')">Todas las carreras</li>`;

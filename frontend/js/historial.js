@@ -72,8 +72,24 @@ function seleccionarCarrera(valor) {
     filtroActual.carrera = valor;
     document.getElementById('selected-carrera').textContent = valor;
 
+    aplicarFiltros();
+    document.getElementById("dropdownOptionsCarrera").classList.remove("show-dropdown");
+}
+
+function seleccionarPeriodo(valor) {
+    filtroActual.periodo = valor;
+    document.getElementById('selected-periodo').textContent = valor;
+    filtroActual.carrera = "Todas las carreras";
+    document.getElementById('selected-carrera').textContent = "Todas las carreras";
+
     actualizarDropdowns();
     aplicarFiltros();
+    document.getElementById("dropdownOptionsPeriodo").classList.remove("show-dropdown");
+}
+
+async function restablecerFiltros() {
+    seleccionarCarrera("Todas las carreras");
+    seleccionarPeriodo("Todos los periodos");
 }
 
 window.onclick = function(event) {
@@ -87,22 +103,6 @@ window.onclick = function(event) {
             dropdownPeriodo.classList.remove('show-dropdown');
         }
     }
-}
-
-async function restablecerFiltros() {
-    seleccionarCarrera("Todas las carreras");
-    seleccionarPeriodo("Todos los periodos");
-}
-
-function seleccionarPeriodo(valor) {
-    filtroActual.periodo = valor;
-    document.getElementById('selected-periodo').textContent = valor;
-    filtroActual.carrera = "Todas las carreras";
-    document.getElementById('selected-carrera').textContent = "Todas las carreras";
-
-    actualizarDropdowns();
-    aplicarFiltros();
-    document.getElementById("dropdownOptionsPeriodo").classList.remove("show-dropdown");
 }
 
 function actualizarDropdowns() {
@@ -121,7 +121,7 @@ function actualizarDropdowns() {
                alumno.carrera.trim() === filtroActual.carrera.trim();
     });
 
-    const carrerasDisponibles = [...new Set(alumnosFiltrados.map(a => a.carrera))]
+    const carrerasDisponibles = [...new Set(alumnosFiltrados.map(a => a.carrera.trim()))]
         .filter(Boolean)
         .sort();
 
