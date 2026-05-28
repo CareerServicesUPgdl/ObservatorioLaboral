@@ -329,12 +329,103 @@ app.get('/Diciembre2017Data', async (req, res) => {
             carrera: fila[2],
             trabaja1: fila[9],
             trabaja2: fila[14],
-            trabaja3: fila[20]
+            trabaja3: fila[19]
         }));
 
         res.json(data);
     } catch (error) {
         console.error("--- ERROR EN EL SERVIDOR3 ---");
+        console.error(error.message);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+//Base de datos del Semaforo Laboral junio 2018
+app.get('/Junio2018Data', async (req, res) => {
+    try {
+        const rows = await getSheet(process.env.IDSheets2018, "'JUNIO'!A2:AU389");
+
+        if (!rows || rows.length === 0) return res.status(404).json([]);
+
+        const data = rows.map(fila => ({
+            carrera: fila[6],
+            trabaja1: fila[11],
+            trabaja2: fila[20],
+            trabaja3: fila[28],
+            trabaja4: fila[35],
+            trabaja5: fila[42]
+        }));
+
+        res.json(data);
+    } catch (error) {
+        console.error("--- ERROR EN EL SERVIDOR4 ---");
+        console.error(error.message);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//Base de datos del Semaforo Laboral diciembre 2018
+app.get('/Diciembre2018Data', async (req, res) => {
+    try {
+        const rows = await getSheet(process.env.IDSheets2018, "'DIC'!A2:AU389");
+
+        if (!rows || rows.length === 0) return res.status(404).json([]);
+
+        const data = rows.map(fila => ({
+            carrera: fila[6],
+            trabaja1: fila[8],
+            trabaja2: fila[16],
+            trabaja3: fila[24]
+        }));
+
+        res.json(data);
+    } catch (error) {
+        console.error("--- ERROR EN EL SERVIDOR5 ---");
+        console.error(error.message);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//Base de datos del Semaforo Laboral junio 2020
+app.get('/Junio2020Data', async (req, res) => {
+    try {
+        const rows = await getSheet(process.env.IDSheets2020, "'JUN'!A2:P412");
+
+        if (!rows || rows.length === 0) return res.status(404).json([]);
+
+        const data = rows.map(fila => ({
+            carrera: fila[2],
+            trabaja1: fila[10],
+            trabaja2: fila[12],
+            trabaja3: fila[14]
+        }));
+
+        res.json(data);
+    } catch (error) {
+        console.error("--- ERROR EN EL SERVIDOR5 ---");
+        console.error(error.message);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//Base de datos del Semaforo Laboral diciembre 2020
+app.get('/Diciembre2020Data', async (req, res) => {
+    try {
+        const rows = await getSheet(process.env.IDSheets2020, "'DIC'!A2:P358");
+
+        if (!rows || rows.length === 0) return res.status(404).json([]);
+
+        const data = rows.map(fila => ({
+            carrera: fila[2],
+            trabaja1: fila[10],
+            trabaja2: fila[12],
+            trabaja3: fila[14]
+        }));
+
+        res.json(data);
+    } catch (error) {
+        console.error("--- ERROR EN EL SERVIDOR5 ---");
         console.error(error.message);
         res.status(500).json({ error: error.message });
     }
