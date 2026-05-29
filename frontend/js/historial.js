@@ -90,7 +90,7 @@ async function iniciarHistorial() {
         const data7 = await response7.json();
         datosJunio2021 = Array.isArray(data7) ? data7 : [];
 
-        /*const response8 = await fetch(`${API_URL}/Diciembre2021Data`);
+        const response8 = await fetch(`${API_URL}/Diciembre2021Data`);
         const data8 = await response8.json();
         datosDiciembre2021 = Array.isArray(data8) ? data8 : [];
 
@@ -116,12 +116,12 @@ async function iniciarHistorial() {
 
         const response14 = await fetch(`${API_URL}/Diciembre2024Data`);
         const data14 = await response14.json();
-        datosDiciembre2024 = Array.isArray(data14) ? data14 : [];*/
+        datosDiciembre2024 = Array.isArray(data14) ? data14 : [];
 
         actualizarDropdowns();
         aplicarFiltros();
 
-        console.log(datosJunio2020);
+        console.log(datosJunio2022);
     } catch (error) {
         console.error("Error al obtener datos:", error);
     }
@@ -208,13 +208,13 @@ function actualizarDropdowns() {
     }
 
     const alumnosFiltrados = datosAFiltrar.filter(alumno => {
+        const carreraAlumno = (alumno.carrera || "").trim();
+
         return filtroActual.carrera === "Todas las carreras" ||
-            alumno.carrera.trim() === filtroActual.carrera.trim();
+            carreraAlumno === filtroActual.carrera.trim();
     });
 
-    const carrerasDisponibles = [...new Set(alumnosFiltrados.map(a => a.carrera.trim()))]
-        .filter(Boolean)
-        .sort();
+    const carrerasDisponibles = [...new Set(alumnosFiltrados.map(a => (a.carrera || "").trim()))].filter(Boolean).sort();
 
     const listaCarreras = document.getElementById('dropdownOptionsCarrera');
 
@@ -266,10 +266,12 @@ function aplicarFiltros() {
     }
 
     todosLosDatos.forEach(alumno => {
-        const cumpleCarrera = filtroActual.carrera === "Todas las carreras" ||
-            alumno.carrera.trim().toLowerCase() === filtroActual.carrera.trim().toLowerCase();
+        const carreraAlumno = (alumno.carrera || "").trim();
 
-        const carrera = alumno.carrera.trim().toLowerCase();
+        const cumpleCarrera = filtroActual.carrera === "Todas las carreras" ||
+            carreraAlumno.toLowerCase() === filtroActual.carrera.trim().toLowerCase();
+
+        const carrera = carreraAlumno.toLowerCase();
 
         const trabaja1 = (alumno.trabaja1 || "").trim().toLowerCase();
         const trabaja2 = (alumno.trabaja2 || "").trim().toLowerCase();
