@@ -86,11 +86,11 @@ async function iniciarHistorial() {
         const data6 = await response6.json();
         datosDiciembre2020 = Array.isArray(data6) ? data6 : [];
 
-        /*const response7 = await fetch(`${API_URL}/Junio2021Data`);
+        const response7 = await fetch(`${API_URL}/Junio2021Data`);
         const data7 = await response7.json();
         datosJunio2021 = Array.isArray(data7) ? data7 : [];
 
-        const response8 = await fetch(`${API_URL}/Diciembre2021Data`);
+        /*const response8 = await fetch(`${API_URL}/Diciembre2021Data`);
         const data8 = await response8.json();
         datosDiciembre2021 = Array.isArray(data8) ? data8 : [];
 

@@ -430,3 +430,25 @@ app.get('/Diciembre2020Data', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+//Base de datos del Semaforo Laboral junio 2021
+app.get('/Junio2021Data', async (req, res) => {
+    try {
+        const rows = await getSheet(process.env.IDSheets2021, "'JUN'!A2:P412");
+
+        if (!rows || rows.length === 0) return res.status(404).json([]);
+
+        const data = rows.map(fila => ({
+            carrera: fila[2],
+            trabaja1: fila[10],
+            trabaja2: fila[12],
+            trabaja3: fila[14]
+        }));
+
+        res.json(data);
+    } catch (error) {
+        console.error("--- ERROR EN EL SERVIDOR6 ---");
+        console.error(error.message);
+        res.status(500).json({ error: error.message });
+    }
+});
