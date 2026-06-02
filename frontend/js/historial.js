@@ -120,8 +120,6 @@ async function iniciarHistorial() {
 
         actualizarDropdowns();
         aplicarFiltros();
-
-        console.log(datosJunio2022);
     } catch (error) {
         console.error("Error al obtener datos:", error);
     }
@@ -208,13 +206,14 @@ function actualizarDropdowns() {
     }
 
     const alumnosFiltrados = datosAFiltrar.filter(alumno => {
-        const carreraAlumno = (alumno.carrera || "").trim();
+        const carreraLimpia = (alumno.carrera || "").trim();
+        const carreraAlumno = estandarizarCarrera(carreraLimpia);
 
         return filtroActual.carrera === "Todas las carreras" ||
             carreraAlumno === filtroActual.carrera.trim();
     });
 
-    const carrerasDisponibles = [...new Set(alumnosFiltrados.map(a => (a.carrera || "").trim()))].filter(Boolean).sort();
+    const carrerasDisponibles = [...new Set(alumnosFiltrados.map(a => (estandarizarCarrera(a.carrera) || "").trim()))].filter(Boolean).sort();
 
     const listaCarreras = document.getElementById('dropdownOptionsCarrera');
 
@@ -266,12 +265,14 @@ function aplicarFiltros() {
     }
 
     todosLosDatos.forEach(alumno => {
-        const carreraAlumno = (alumno.carrera || "").trim();
+        const carreraLimpia = (alumno.carrera || "").trim();
+        const carreraAlumno = estandarizarCarrera(carreraLimpia);
 
         const cumpleCarrera = filtroActual.carrera === "Todas las carreras" ||
             carreraAlumno.toLowerCase() === filtroActual.carrera.trim().toLowerCase();
 
         const carrera = carreraAlumno.toLowerCase();
+        const carreraOrginal = carreraAlumno;
 
         const trabaja1 = (alumno.trabaja1 || "").trim().toLowerCase();
         const trabaja2 = (alumno.trabaja2 || "").trim().toLowerCase();
@@ -279,10 +280,10 @@ function aplicarFiltros() {
         const trabaja4 = (alumno.trabaja4 || "").trim().toLowerCase();
         const trabaja5 = (alumno.trabaja5 || "").trim().toLowerCase();
 
-        if (cumpleCarrera) {
+        if (cumpleCarrera && carrera!== "") {
             if (!datosGraficaTiempo[carrera]) {
                 datosGraficaTiempo[carrera] = {
-                    label: carrera,
+                    label: carreraOrginal,
                     data: new Array(tiempos.length).fill(0),
                     borderColor: obtenerColorCarrera(carrera),
                     backgroundColor: obtenerColorCarrera(carrera),
@@ -291,7 +292,7 @@ function aplicarFiltros() {
                 };
             }
 
-            if (trabaja1 === "sí" || trabaja1 === "si" || trabaja1 ==="sí trabaja" || trabaja1 === "si trabaja") {
+            if (trabaja1 === "sí" || trabaja1 === "si" || trabaja1 === "sí trabaja" || trabaja1 === "si trabaja") {
 
                 datosGraficaTiempo[carrera].data[0]++;
 
@@ -417,3 +418,142 @@ function obtenerColorCarrera(carrera) {
 document.addEventListener('DOMContentLoaded', () => {
     iniciarHistorial();
 });
+
+function estandarizarCarrera(carrera) {
+
+    const normalizar = (texto) =>
+        (texto || "")
+            .trim()
+            .toUpperCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+
+    const mapaCarreras = {
+        "ACON": "Contaduría",
+        "AD": "Administración y Dirección",
+        "ADEF": "Administración y Dirección de Empresas Familiares",
+        "ADMIN DIRECCIÓN DE EMPRESAS FAM": "Administración y Dirección de Empresas Familiares",
+        "ADMIN Y DIRECCIÓN": "Administración y Dirección",
+        "ADMIN Y FINAZAS": "Administración y Finanzas",
+        "ADMIN Y FINANZAS": "Administración y Finanzas",
+        "ADMIN Y MERCADOTECNIA": "Administración y Mercadotecnia",
+        "ADMIN Y NEGOCIOS INTERNACIONALES": "Administración y Negocios Internacionales",
+        "ADMIN Y RECURSOS HUMANOS": "Administración y Dirección del Talento",
+
+        "AF": "Administración y Finanzas",
+        "AME": "Administración y Mercadotecnia",
+        "AMER": "Administración y Mercadotecnia",
+        "ANI": "Administración y Negocios Internacionales",
+
+        "ANIMACIÓN": "Ingeniería en Animación Digital",
+        "IAD": "Ingeniería en Animación Digital",
+        "Ing. Animación Digital": "Ingeniería en Animación Digital",
+
+        "ARH": "Administración y Dirección del Talento",
+
+        "AUD": "Producción y Creación Audiovisual",
+        "AUDIOVISUAL": "Producción y Creación Audiovisual",
+        "CAUD": "Producción y Creación Audiovisual",
+        "LAUDC": "Producción y Creación Audiovisual",
+        "COMUNICACIÓN AUDIOVISUAL": "Producción y Creación Audiovisual",
+        "Comunicación y Creación Audiovisual": "Producción y Creación Audiovisual",
+
+        "COMUNICACIÓN RELACIONES PÚBLICAS": "Publicidad y Relaciones Públicas",
+        "CPUB": "Publicidad y Relaciones Públicas",
+        "PUB": "Publicidad y Relaciones Públicas",
+        "RELACIONES PÚBLICAS": "Publicidad y Relaciones Públicas",
+
+        "CON": "Contaduría",
+        "CONTA": "Contaduría",
+        "CONTADURÍA": "Contaduría",
+        "CONTADURIA": "Contaduría",
+        "Conta": "Contaduría",
+        "Contaduria": "Contaduría",
+        "LCONC": "Contaduría",
+
+        "CPER": "Comunicación y Periodismo",
+        "PER": "Comunicación y Periodismo",
+        "PERIODÍSTICA": "Comunicación y Periodismo",
+        "Comunicación Periodística": "Comunicación y Periodismo",
+
+        "Comunicación, Pub y RP": "Comunicación, Publicidad y Relaciones Públicas",
+        "Comunicación Publicidad y Relaciones Públicas": "Comunicación, Publicidad y Relaciones Públicas",
+
+        "DER": "Derecho",
+        "DERECHO": "Derecho",
+        "LDERC": "Derecho",
+
+        "DIRECCIÓN": "Administración y Dirección",
+        "LADIC": "Administración y Dirección",
+        "Administración y dirección": "Administración y Dirección",
+
+        "EMPRESAS FAMILIARES": "Administración y Dirección de Empresas Familiares",
+        "LAEFC": "Administración y Dirección de Empresas Familiares",
+
+        "ESDAI": "Administración y Hospitalidad",
+        "LADHC": "Administración y Hospitalidad",
+
+        "FINANZAS": "Administración y Finanzas",
+        "LFINC": "Administración y Finanzas",
+
+        "ICA": "Ingeniería Civil y Administración",
+        "ING CIVIL Y ADMINISTRACIÓN": "Ingeniería Civil y Administración",
+        "Ing. Civil": "Ingeniería Civil y Administración",
+
+        "IID": "Ingeniería en Innovación y Diseño",
+        "ING INNOVACIÓN Y DISEÑO": "Ingeniería en Innovación y Diseño",
+        "INNOVACIÓN Y DISEÑO": "Ingeniería en Innovación y Diseño",
+        "Ing. Innovación y Diseño": "Ingeniería en Innovación y Diseño",
+
+        "IIN": "Ingeniería Industrial e Innovación de Negocios",
+        "IIIN": "Ingeniería Industrial e Innovación de Negocios",
+        "INDUSTRIAL": "Ingeniería Industrial e Innovación de Negocios",
+        "ING INDUSTRIAL": "Ingeniería Industrial e Innovación de Negocios",
+        "Ing. Industrial": "Ingeniería Industrial e Innovación de Negocios",
+
+        "IME": "Ingeniería Mecatrónica",
+        "MECATRÓNICA": "Ingeniería Mecatrónica",
+        "ING MECATRÓNICA": "Ingeniería Mecatrónica",
+        "ING MECATRONICA": "Ingeniería Mecatrónica",
+        "Ing. Mecatrónica": "Ingeniería Mecatrónica",
+
+        "ISGC": "Ingeniería en Sistemas y Gráficas Computacionales",
+        "Ing. Sistemas y Gráficas computacionales": "Ingeniería en Sistemas y Gráficas Computacionales",
+        "Ingenería en Sistemas y Gráficas Computacionales": "Ingeniería en Sistemas y Gráficas Computacionales",
+
+        "LAINC": "Administración y Negocios Internacionales",
+        "LANIC": "Administración y Negocios Internacionales",
+        "NEGOCIOS": "Administración y Negocios Internacionales",
+        "Negocios Internacionales": "Administración y Negocios Internacionales",
+        "Negocios internacionales": "Administración y Negocios Internacionales",
+
+        "LARHC": "Administración y Dirección del Talento",
+        "RECURSOS HUMANOS": "Administración y Dirección del Talento",
+        "Recursos Humanos": "Administración y Dirección del Talento",
+        "Administración y Recursos Humanos": "Administración y Dirección del Talento",
+
+        "LMERC": "Administración y Mercadotecnia",
+        "MERCADOTECNIA": "Administración y Mercadotecnia",
+        "Mercadotecnia": "Administración y Mercadotecnia",
+        "Administración y Mercadotecnia": "Administración y Mercadotecnia",
+
+        "PED": "Pedagogía e Innovación Educativa",
+        "PIE": "Pedagogía e Innovación Educativa",
+        "Pedagogia": "Pedagogía e Innovación Educativa",
+
+        "PSP": "Psicología",
+        "PSPC": "Psicopedagogía",
+
+        "#N/A": "Administración y Dirección"
+    };
+
+    const mapaNormalizado = {};
+
+    Object.entries(mapaCarreras).forEach(([key, value]) => {
+        mapaNormalizado[normalizar(key)] = value;
+    });
+
+    const carreraNormalizada = normalizar(carrera);
+
+    return mapaNormalizado[carreraNormalizada] || carrera?.trim() || "";
+}

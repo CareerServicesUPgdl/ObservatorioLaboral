@@ -244,7 +244,7 @@ function aplicarFiltros() {
                     datosGraficaTiempo[carrera].data[index]++;
                 }
 
-                //grafica colocacion
+                //grafica sector
                 let sectorAlumno = alumno.sector.trim() ? alumno.sector.trim().toLowerCase() : "otro";
                 let indexSector = categoriasSector.indexOf(sectorAlumno);
 
@@ -286,7 +286,7 @@ function aplicarFiltros() {
         datasets: Object.values(datosGraficaTiempo)
     });
     graficaSector({
-        etiquetas: categoriasSector,
+        etiquetas: ["Automotriz", "Comercio", "Consumo", "Educación", "Farmacéutica", "Financiero", "Retail", "Servicios", "Tecnología", "Turismo", "Otro"],
         datasets: [{
             label: 'Egresados',
             data: [...alumnosPorSector],
