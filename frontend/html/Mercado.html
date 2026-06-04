@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../css/sidebar.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <script src="../js/config.js"></script>
+    <script src="../js/mercado.js"></script>
 </head>
 
 <body>
@@ -32,7 +33,7 @@
                 </div>
             </li>
 
-            <li class="sidebarElement seleccionado">
+            <li class="sidebarElement">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="sidebarIcon"
                     class="bi bi-clock-history" viewBox="0 0 16 16">
                     <path
@@ -46,7 +47,7 @@
                 </div>
             </li>
 
-            <li class="sidebarElement">
+            <li class="sidebarElement seleccionado">
                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="sidebarIcon"
                     class="bi bi-clipboard2-data" viewBox="0 0 20 20">
                     <path
@@ -62,8 +63,8 @@
             </li>
 
             <li class="sidebarElement" id="administracion">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-gear sidebarIcon"
-                    viewBox="0 0 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                    class="bi bi-gear sidebarIcon" viewBox="0 0 16 16">
                     <path
                         d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0" />
                     <path
@@ -91,33 +92,9 @@
     </aside>
 
     <div class="main-content">
-        <h1>Historial</h1>
-        <p>Los datos de 2019 no pueden ser tomados en cuenta por motivos de pandemia</p>
+        <h1>Análisis de Mercado</h1>
 
         <div class="conteiner">
-            <div class="dropdown" id="dropdownPeriodo">
-                <div class="dropdown-header" onclick="dropdownPeriodo()">
-                    <span id="selected-periodo">Todos los períodos</span>
-                    <span>▼</span>
-                </div>
-                <ul class="dropdown-options" id="dropdownOptionsPeriodo">
-                    <li onclick="seleccionarPeriodo('Todos los periodos')">Todos los períodos</li>
-                    <li onclick="seleccionarPeriodo('Junio 2017')">Junio 2017</li>
-                    <li onclick="seleccionarPeriodo('Diciembre 2017')">Diciembre 2017</li>
-                    <li onclick="seleccionarPeriodo('Junio 2018')">Junio 2018</li>
-                    <li onclick="seleccionarPeriodo('Diciembre 2018')">Diciembre 2018</li>
-                    <li onclick="seleccionarPeriodo('Junio 2020')">Junio 2020</li>
-                    <li onclick="seleccionarPeriodo('Diciembre 2020')">Diciembre 2020</li>
-                    <li onclick="seleccionarPeriodo('Junio 2021')">Junio 2021</li>
-                    <li onclick="seleccionarPeriodo('Diciembre 2021')">Diciembre 2021</li>
-                    <li onclick="seleccionarPeriodo('Junio 2022')">Junio 2022</li>
-                    <li onclick="seleccionarPeriodo('Diciembre 2022')">Diciembre 2022</li>
-                    <li onclick="seleccionarPeriodo('Junio 2023')">Junio 2023</li>
-                    <li onclick="seleccionarPeriodo('Diciembre 2023')">Diciembre 2023</li>
-                    <li onclick="seleccionarPeriodo('Junio 2024')">Junio 2024</li>
-                    <li onclick="seleccionarPeriodo('Diciembre 2024')">Diciembre 2024</li>
-                </ul>
-            </div>
 
             <div class="dropdown" id="dropdownCarrera">
                 <div class="dropdown-header" onclick="dropdownCarrera()">
@@ -129,22 +106,8 @@
                 </ul>
             </div>
 
-            <div class="conteiner">
-                <button onclick="restablecerFiltros()" class="restablecer">Restablecer filtros</button>
-            </div>
         </div>
-
-        <div class="dashboard-container">
-            <div class="chart-colocacion">
-                <canvas id="tiempoColocacion"></canvas>
-            </div>
-        </div>
-        
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-    <script src="../js/historial.js"></script>
 </body>
 
 </html>

@@ -280,7 +280,7 @@ function aplicarFiltros() {
         const trabaja4 = (alumno.trabaja4 || "").trim().toLowerCase();
         const trabaja5 = (alumno.trabaja5 || "").trim().toLowerCase();
 
-        if (cumpleCarrera && carrera!== "") {
+        if (cumpleCarrera && carrera !== "") {
             if (!datosGraficaTiempo[carrera]) {
                 datosGraficaTiempo[carrera] = {
                     label: carreraOrginal,
