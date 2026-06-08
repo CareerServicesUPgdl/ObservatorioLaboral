@@ -146,3 +146,24 @@ function cambiarCuenta(id, nuevoRol) {
         alert("Error de conexión");
     });
 }
+
+async function refreshDatos() {
+    try {
+        console.log("Actualizando datos...");
+        const token = localStorage.getItem("token");
+
+        await fetch(`${API_URL}/actualizarDatos`, {
+            method: "POST",
+            headers: {
+                "Authorization": token
+            }
+        });
+
+        document.getElementById("mensaje").innerText = "Datos actualizados correctamente";
+
+        location.reload();
+
+    } catch (error) {
+        console.error(error);
+    }
+}

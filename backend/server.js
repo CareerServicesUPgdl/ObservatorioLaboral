@@ -156,7 +156,7 @@ app.post("/login", async (req, res) => {
     await cargarDatos();
 
     app.listen(process.env.port, () => {
-        console.log(`Servidor escuchando en puerto ${process.env.port}`);
+        console.log(`Servidor en ${process.env.port}`);
     });
 })();
 
@@ -566,4 +566,27 @@ app.get('/Junio2024Data', async (req, res) => {
 //Base de datos del Semaforo Laboral diciembre 2024
 app.get('/Diciembre2024Data', async (req, res) => {
     res.json(datosDiciembre2024);
+});
+
+app.post('/actualizarDatos', verificarToken, async (req, res) => {
+    try {
+        if (req.usuario.cuenta !== "Admin") {
+            return res.status(403).json({ error: "No tienes permisos de administrador" });
+        }
+
+        await cargarDatos();
+
+        res.json({
+            success: true,
+            mensaje: "Datos actualizados"
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+
+    }
 });
