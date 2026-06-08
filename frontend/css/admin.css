@@ -71,3 +71,47 @@
     cursor: pointer;
     color:white;
 }
+
+.btnRefresh {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    width: 150px;
+    height: 40px;
+
+    border: 1px solid rgb(98, 0, 0);
+    border-radius: 6px;
+
+    background: white;
+    color: rgb(98, 0, 0);
+
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.btnRefresh:hover {
+    background-color: rgb(79, 0, 0);
+    color: white;
+}
+
+.btnRefresh span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btnRefresh svg {
+    width: 22px;
+    height: 22px;
+
+    display: block;
+
+    position: relative;
+    top: 1px;
+}
