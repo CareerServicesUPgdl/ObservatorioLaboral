@@ -152,6 +152,10 @@ async function refreshDatos() {
         console.log("Actualizando datos...");
         const token = localStorage.getItem("token");
 
+        if (!confirm("El boton actualizar es para actualizar los datos del QS y los del semaforo laboral (no para actualizar a los usuarios) ¿Seguro que quieres actualizar los datos?")) {
+        return;
+    }
+
         await fetch(`${API_URL}/actualizarDatos`, {
             method: "POST",
             headers: {
