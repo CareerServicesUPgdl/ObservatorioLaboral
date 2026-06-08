@@ -154,11 +154,11 @@ app.post("/login", async (req, res) => {
 //Aqui se inicia el servidor
 (async () => {
     await cargarDatos();
+})();
 
-    app.listen(process.env.URL, () => {
+app.listen(process.env.URL, () => {
         console.log(`Servidor en ${process.env.URL}`);
     });
-})();
 
 //aqui se verifica que el usuario tenga token
 function verificarToken(req, res, next) {
