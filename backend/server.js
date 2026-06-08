@@ -155,7 +155,7 @@ app.post("/login", async (req, res) => {
 (async () => {
     await cargarDatos();
 
-    app.listen(process.env.port, () => {
+    app.listen(process.env.URL, () => {
         console.log(`Servidor en ${process.env.URL}`);
     });
 })();
