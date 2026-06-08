@@ -152,9 +152,13 @@ app.post("/login", async (req, res) => {
 });
 
 //Aqui se inicia el servidor
-app.listen(process.env.port, () => {
-    console.log(`Servidor en ${process.env.URL}`);
-});
+(async () => {
+    await cargarDatos();
+
+    app.listen(process.env.port, () => {
+        console.log(`Servidor en ${process.env.URL}`);
+    });
+})();
 
 //aqui se verifica que el usuario tenga token
 function verificarToken(req, res, next) {
@@ -269,14 +273,35 @@ app.put("/usuarios/cuenta/:id", verificarToken, async (req, res) => {
     }
 });
 
-//Base de datos del QS
-app.get('/qsData', async (req, res) => {
+//Datos del semaforo
+let qsData = [];
+let datosJunio2017 = [];
+let datosDiciembre2017 = [];
+let datosJunio2018 = [];
+let datosDiciembre2018 = [];
+let datosJunio2020 = [];
+let datosDiciembre2020 = [];
+let datosJunio2021 = [];
+let datosDiciembre2021 = [];
+let datosJunio2022 = [];
+let datosDiciembre2022 = [];
+let datosJunio2023 = [];
+let datosDiciembre2023 = [];
+let datosJunio2024 = [];
+let datosDiciembre2024 = [];
+
+//Cargar los datos al iniciar el servidor
+async function cargarDatos() {
+
+    console.log("Actualizando datos...");
+
     try {
-        const rows = await getSheet(process.env.IDSheetsQS, "'Respuestas de formulario 1'!A2:AD3600");
+        //QS
+        const rows = await getSheet(process.env.IDSheetsQS, "'Respuestas de formulario 1'!A2:AD4600");
 
         if (!rows || rows.length === 0) return res.status(404).json([]);
 
-        const data = rows.map(fila => ({
+        qsData = rows.map(fila => ({
             campus: fila[10],
             carrera: fila[11],
             facultad: fila[28],
@@ -288,64 +313,36 @@ app.get('/qsData', async (req, res) => {
             egreso: fila[29]
         }));
 
-        res.json(data);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: error.message });
-    }
-});
+        //Semaforo laboral junio 2017
+        const rowsJunio2017 = await getSheet(process.env.IDSheets2017, "'JUNIO'!E2:Z372");
 
-//Base de datos del Semaforo Laboral junio 2017
-app.get('/Junio2017Data', async (req, res) => {
-    try {
-        const rows = await getSheet(process.env.IDSheets2017, "'JUNIO'!E2:Z372");
+        if (!rowsJunio2017 || rowsJunio2017.length === 0) return res.status(404).json([]);
 
-        if (!rows || rows.length === 0) return res.status(404).json([]);
-
-        const data = rows.map(fila => ({
+        datosJunio2017 = rowsJunio2017.map(fila => ({
             carrera: fila[3],
             trabaja1: fila[7],
             trabaja2: fila[12],
             trabaja3: fila[17]
         }));
 
-        res.json(data);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: error.message });
-    }
-});
+        //Semaforo laboral diciembre 2017
+        const rowsDiciembre2017 = await getSheet(process.env.IDSheets2017, "'DIC'!A2:X205");
 
-//Base de datos del Semaforo Laboral diciembre 2017
-app.get('/Diciembre2017Data', async (req, res) => {
-    try {
-        const rows = await getSheet(process.env.IDSheets2017, "'DIC'!A2:X205");
+        if (!rowsDiciembre2017 || rowsDiciembre2017.length === 0) return res.status(404).json([]);
 
-        if (!rows || rows.length === 0) return res.status(404).json([]);
-
-        const data = rows.map(fila => ({
+        datosDiciembre2017 = rowsDiciembre2017.map(fila => ({
             carrera: fila[2],
             trabaja1: fila[9],
             trabaja2: fila[14],
             trabaja3: fila[19]
         }));
 
-        res.json(data);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: error.message });
-    }
-});
+        //Semaforo laboral junio 2018
+        const rowsJunio2018 = await getSheet(process.env.IDSheets2018, "'JUNIO'!A2:AU389");
 
+        if (!rowsJunio2018 || rowsJunio2018.length === 0) return res.status(404).json([]);
 
-//Base de datos del Semaforo Laboral junio 2018
-app.get('/Junio2018Data', async (req, res) => {
-    try {
-        const rows = await getSheet(process.env.IDSheets2018, "'JUNIO'!A2:AU389");
-
-        if (!rows || rows.length === 0) return res.status(404).json([]);
-
-        const data = rows.map(fila => ({
+        datosJunio2018 = rowsJunio2018.map(fila => ({
             carrera: fila[6],
             trabaja1: fila[11],
             trabaja2: fila[20],
@@ -354,168 +351,96 @@ app.get('/Junio2018Data', async (req, res) => {
             trabaja5: fila[42]
         }));
 
-        res.json(data);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: error.message });
-    }
-});
+        //Semaforo laboral diciembre 2018
+        const rowsDiciembre2018 = await getSheet(process.env.IDSheets2018, "'DIC'!A2:AU389");
 
-//Base de datos del Semaforo Laboral diciembre 2018
-app.get('/Diciembre2018Data', async (req, res) => {
-    try {
-        const rows = await getSheet(process.env.IDSheets2018, "'DIC'!A2:AU389");
+        if (!rowsDiciembre2018 || rowsDiciembre2018.length === 0) return res.status(404).json([]);
 
-        if (!rows || rows.length === 0) return res.status(404).json([]);
-
-        const data = rows.map(fila => ({
+        datosDiciembre2018 = rowsDiciembre2018.map(fila => ({
             carrera: fila[6],
             trabaja1: fila[8],
             trabaja2: fila[16],
             trabaja3: fila[24]
         }));
 
-        res.json(data);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: error.message });
-    }
-});
+        //Semaforo laboral junio 2020
+        const rowsJunio2020 = await getSheet(process.env.IDSheets2020, "'JUN'!A2:P412");
 
-//Base de datos del Semaforo Laboral junio 2020
-app.get('/Junio2020Data', async (req, res) => {
-    try {
-        const rows = await getSheet(process.env.IDSheets2020, "'JUN'!A2:P412");
+        if (!rowsJunio2020 || rowsJunio2020.length === 0) return res.status(404).json([]);
 
-        if (!rows || rows.length === 0) return res.status(404).json([]);
-
-        const data = rows.map(fila => ({
+        datosJunio2020 = rowsJunio2020.map(fila => ({
             carrera: fila[2],
             trabaja1: fila[10],
             trabaja2: fila[12],
             trabaja3: fila[14]
         }));
 
-        res.json(data);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: error.message });
-    }
-});
+        //Semaforo laboral diciembre 2020
+        const rowsDiciembre2020 = await getSheet(process.env.IDSheets2020, "'DIC'!A2:P358");
 
-//Base de datos del Semaforo Laboral diciembre 2020
-app.get('/Diciembre2020Data', async (req, res) => {
-    try {
-        const rows = await getSheet(process.env.IDSheets2020, "'DIC'!A2:P358");
+        if (!rowsDiciembre2020 || rowsDiciembre2020.length === 0) return res.status(404).json([]);
 
-        if (!rows || rows.length === 0) return res.status(404).json([]);
-
-        const data = rows.map(fila => ({
+        datosDiciembre2020 = rowsDiciembre2020.map(fila => ({
             carrera: fila[2],
             trabaja1: fila[10],
             trabaja2: fila[12],
             trabaja3: fila[14]
         }));
 
-        res.json(data);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: error.message });
-    }
-});
+        //Semaforo laboral junio 2021
+        const rowsJunio2021 = await getSheet(process.env.IDSheets2021, "'JUN'!A2:P352");
 
-//Base de datos del Semaforo Laboral junio 2021
-app.get('/Junio2021Data', async (req, res) => {
-    try {
-        const rows = await getSheet(process.env.IDSheets2021, "'JUN'!A2:P352");
+        if (!rowsJunio2021 || rowsJunio2021.length === 0) return res.status(404).json([]);
 
-        if (!rows || rows.length === 0) return res.status(404).json([]);
-
-        const data = rows.map(fila => ({
+        datosJunio2021 = rowsJunio2021.map(fila => ({
             carrera: fila[2],
             trabaja1: fila[10],
             trabaja2: fila[12],
             trabaja3: fila[14]
         }));
 
-        res.json(data);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: error.message });
-    }
-});
+        //Semaforo laboral diciembre 2021
+        const rowsDiciembre2021 = await getSheet(process.env.IDSheets2021, "'DIC'!A2:T387");
 
-//Base de datos del Semaforo Laboral diciembre 2021
-app.get('/Diciembre2021Data', async (req, res) => {
-    try {
-        const rows = await getSheet(process.env.IDSheets2021, "'DIC'!A2:T387");
+        if (!rowsDiciembre2021 || rowsDiciembre2021.length === 0) return res.status(404).json([]);
 
-        if (!rows || rows.length === 0) return res.status(404).json([]);
-
-        const data = rows.map(fila => ({
+        datosDiciembre2021 = rowsDiciembre2021.map(fila => ({
             carrera: fila[2],
             trabaja1: fila[11],
             trabaja2: fila[13],
             trabaja3: fila[15]
         }));
 
-        res.json(data);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: error.message });
-    }
-});
+        //Semaforo laboral junio 2022
+        const rowsJunio2022 = await getSheet(process.env.IDSheets2022, "'JUN'!A2:T387");
 
-//Base de datos del Semaforo Laboral junio 2022
-app.get('/Junio2022Data', async (req, res) => {
-    try {
-        const rows = await getSheet(process.env.IDSheets2022, "'JUN'!A2:T387");
+        if (!rowsJunio2022 || rowsJunio2022.length === 0) return res.status(404).json([]);
 
-        if (!rows || rows.length === 0) return res.status(404).json([]);
-
-        const data = rows.map(fila => ({
+        datosJunio2022 = rowsJunio2022.map(fila => ({
             carrera: fila[3],
             trabaja1: fila[14],
             trabaja2: fila[16],
             trabaja3: fila[18]
         }));
 
-        res.json(data);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: error.message });
-    }
-});
+        //Semaforo laboral diciembre 2022
+        const rowsDiciembre2022 = await getSheet(process.env.IDSheets2022, "'DIC'!A2:P336");
 
-//Base de datos del Semaforo Laboral diciembre 2022
-app.get('/Diciembre2022Data', async (req, res) => {
-    try {
-        const rows = await getSheet(process.env.IDSheets2022, "'DIC'!A2:P336");
+        if (!rowsDiciembre2022 || rowsDiciembre2022.length === 0) return res.status(404).json([]);
 
-        if (!rows || rows.length === 0) return res.status(404).json([]);
-
-        const data = rows.map(fila => ({
+        datosDiciembre2022 = rowsDiciembre2022.map(fila => ({
             carrera: fila[2],
             trabaja1: fila[10],
             trabaja2: fila[12],
             trabaja3: fila[14]
         }));
 
-        res.json(data);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: error.message });
-    }
-});
+        //Semaforo laboral junio 2023
+        const rowsJunio2023 = await getSheet(process.env.IDSheets2023, "'JUN'!A2:S406");
 
-//Base de datos del Semaforo Laboral junio 2023
-app.get('/Junio2023Data', async (req, res) => {
-    try {
-        const rows = await getSheet(process.env.IDSheets2023, "'JUN'!A2:S406");
+        if (!rowsJunio2023 || rowsJunio2023.length === 0) return res.status(404).json([]);
 
-        if (!rows || rows.length === 0) return res.status(404).json([]);
-
-        const data = rows.map(fila => ({
+        datosJunio2023 = rowsJunio2023.map(fila => ({
             carrera: fila[2],
             trabaja1: fila[11],
             trabaja2: fila[13],
@@ -523,21 +448,12 @@ app.get('/Junio2023Data', async (req, res) => {
             trabaja4: fila[17]
         }));
 
-        res.json(data);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: error.message });
-    }
-});
+        //Semaforo laboral diciembre 2023
+        const rowsDiciembre2023 = await getSheet(process.env.IDSheets2023, "'DIC'!A2:AP287");
 
-//Base de datos del Semaforo Laboral diciembre 2023
-app.get('/Diciembre2023Data', async (req, res) => {
-    try {
-        const rows = await getSheet(process.env.IDSheets2023, "'DIC'!A2:AP287");
+        if (!rowsDiciembre2023 || rowsDiciembre2023.length === 0) return res.status(404).json([]);
 
-        if (!rows || rows.length === 0) return res.status(404).json([]);
-
-        const data = rows.map(fila => ({
+        datosDiciembre2023 = rowsDiciembre2023.map(fila => ({
             carrera: fila[4],
             trabaja1: fila[7],
             trabaja2: fila[17],
@@ -545,50 +461,109 @@ app.get('/Diciembre2023Data', async (req, res) => {
             trabaja4: fila[34]
         }));
 
-        res.json(data);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: error.message });
-    }
-});
+        //Semaforo laboral junio 2024
+        const rowsJunio2024 = await getSheet(process.env.IDSheets2024, "'JUN'!A2:AK405");
 
-//Base de datos del Semaforo Laboral junio 2024
-app.get('/Junio2024Data', async (req, res) => {
-    try {
-        const rows = await getSheet(process.env.IDSheets2024, "'JUN'!A2:AK405");
+        if (!rowsJunio2024 || rowsJunio2024.length === 0) return res.status(404).json([]);
 
-        if (!rows || rows.length === 0) return res.status(404).json([]);
-
-        const data = rows.map(fila => ({
+        datosJunio2024 = rowsJunio2024.map(fila => ({
             carrera: fila[4],
             trabaja1: fila[8],
             trabaja2: fila[19],
             trabaja3: fila[29]
         }));
 
-        res.json(data);
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: error.message });
-    }
-});
+        //Semaforo laboral diciembre 2024
+        const rowsDiciembre2024 = await getSheet(process.env.IDSheets2024, "'DIC'!A2:Z392");
 
-//Base de datos del Semaforo Laboral diciembre 2024
-app.get('/Diciembre2024Data', async (req, res) => {
-    try {
-        const rows = await getSheet(process.env.IDSheets2024, "'DIC'!A2:Z392");
+        if (!rowsDiciembre2024 || rowsDiciembre2024.length === 0) return res.status(404).json([]);
 
-        if (!rows || rows.length === 0) return res.status(404).json([]);
-
-        const data = rows.map(fila => ({
+        datosDiciembre2024 = rowsDiciembre2024.map(fila => ({
             carrera: fila[4],
             trabaja1: fila[8],
             trabaja2: fila[18]
         }));
 
-        res.json(data);
     } catch (error) {
         console.error(error.message);
         res.status(500).json({ error: error.message });
     }
+
+    console.log("Datos actualizados");
+}
+
+//Base de datos del QS
+app.get('/qsData', async (req, res) => {
+    res.json(qsData);
+});
+
+//Base de datos del Semaforo Laboral junio 2017
+app.get('/Junio2017Data', async (req, res) => {
+    res.json(datosJunio2017);
+});
+
+//Base de datos del Semaforo Laboral diciembre 2017
+app.get('/Diciembre2017Data', async (req, res) => {
+    res.json(datosDiciembre2017);
+});
+
+
+//Base de datos del Semaforo Laboral junio 2018
+app.get('/Junio2018Data', async (req, res) => {
+    res.json(datosJunio2018);
+});
+
+//Base de datos del Semaforo Laboral diciembre 2018
+app.get('/Diciembre2018Data', async (req, res) => {
+    res.json(datosDiciembre2018);
+});
+
+//Base de datos del Semaforo Laboral junio 2020
+app.get('/Junio2020Data', async (req, res) => {
+    res.json(datosJunio2020);
+});
+
+//Base de datos del Semaforo Laboral diciembre 2020
+app.get('/Diciembre2020Data', async (req, res) => {
+    res.json(datosDiciembre2020);
+});
+
+//Base de datos del Semaforo Laboral junio 2021
+app.get('/Junio2021Data', async (req, res) => {
+    res.json(datosJunio2021);
+});
+
+//Base de datos del Semaforo Laboral diciembre 2021
+app.get('/Diciembre2021Data', async (req, res) => {
+    res.json(datosDiciembre2021);
+});
+
+//Base de datos del Semaforo Laboral junio 2022
+app.get('/Junio2022Data', async (req, res) => {
+    res.json(datosJunio2022);
+});
+
+//Base de datos del Semaforo Laboral diciembre 2022
+app.get('/Diciembre2022Data', async (req, res) => {
+    res.json(datosDiciembre2022);
+});
+
+//Base de datos del Semaforo Laboral junio 2023
+app.get('/Junio2023Data', async (req, res) => {
+    res.json(datosJunio2023);
+});
+
+//Base de datos del Semaforo Laboral diciembre 2023
+app.get('/Diciembre2023Data', async (req, res) => {
+    res.json(datosDiciembre2023);
+});
+
+//Base de datos del Semaforo Laboral junio 2024
+app.get('/Junio2024Data', async (req, res) => {
+    res.json(datosJunio2024);
+});
+
+//Base de datos del Semaforo Laboral diciembre 2024
+app.get('/Diciembre2024Data', async (req, res) => {
+    res.json(datosDiciembre2024);
 });
