@@ -39,3 +39,237 @@ fetch(`${API_URL}/perfil`, {
         localStorage.removeItem("token");
         window.location.href = "../html/Login.html";
     });
+
+window.onclick = function (event) {
+    if (!event.target.closest('.dropdown')) {
+        const dropdown = document.getElementById("dropdownOptionsCarrera");
+        if (dropdown.classList.contains('show-dropdown')) {
+            dropdown.classList.remove('show-dropdown');
+        }
+    }
+}
+
+let filtroActual = {
+    carrera: "Todas las carreras"
+};
+
+function dropdownCarrera() {
+    document.getElementById("dropdownOptionsCarrera").classList.toggle("show-dropdown");
+}
+
+function seleccionarCarrera(valor) {
+    filtroActual.carrera = valor;
+    document.getElementById('selected-carrera').textContent = valor;
+
+    aplicarFiltros();
+    actualizarDropdowns();
+    document.getElementById("dropdownOptionsCarrera").classList.remove("show-dropdown");
+}
+
+function actualizarDropdowns() {
+
+    const carrerasDisponibles = [
+        ...new Set(
+            datosENOE
+                .map(a => estandarizarCarrera(a.carrera))
+                .filter(Boolean)
+        )
+    ].sort();
+
+    const listaCarrera = document.getElementById('dropdownOptionsCarrera');
+
+    listaCarrera.innerHTML =
+        `<li onclick="seleccionarCarrera('Todas las carreras')">Todas las carreras</li>`;
+
+    carrerasDisponibles.forEach(car => {
+        const li = document.createElement('li');
+        li.textContent = car;
+        li.onclick = () => seleccionarCarrera(car);
+        listaCarrera.appendChild(li);
+    });
+}
+
+let datosENOE = [];
+
+async function iniciarMercado() {
+    const response = await fetch(`${API_URL}/enoeData`);
+    const data = await response.json();
+    datosENOE = Array.isArray(data) ? data : [];
+
+    aplicarFiltros();
+    actualizarDropdowns();
+}
+
+function estandarizarCarrera(codigo) {
+    const mapaCarreras = {
+        "11000": "Pedagogía",
+        "11100": "Pedagogía",
+        "11200": "Pedagogía",
+        "11300": "Pedagogía",
+        "11400": "Pedagogía",
+        "11500": "Pedagogía",
+
+        "21400": "Producción y Creación Audiovisual",
+
+        "21500": "Administración y Mercadotecnia",
+
+        "31100": "Psicología",
+
+        "32100": "Publicidad y Relaciones Públicas",
+        "41200": "Publicidad y Relaciones Públicas",
+
+        "62100": "Comunicación y Opinion Pública",
+
+        "33100": "Derecho",
+
+        "41100": "Administración y Negocios Internacionales",
+
+        "41300": "Administración y Finanzas",
+
+        "41400": "Contaduría",
+
+        "42000": "Administración y Dirección de Empresas Familiares",
+
+        "42100": "Administración y Dirección",
+
+        "42200": "Dirección de Negocios Gastronómicos",
+        "101500": "Dirección de Negocios Gastronómicos",
+
+        "42400": "Ingeniería Civil y Administración",
+        "73200": "Ingeniería Civil y Administración",
+
+        "61100": "Ingeniería en Sistemas y Gráficas Computacionales",
+        "61300": "Ingeniería en Sistemas y Gráficas Computacionales",
+        "62200": "Ingeniería en Sistemas y Gráficas Computacionales",
+
+        "71000": "Ingeniería Mecatrónica",
+        "71100": "Ingeniería Mecatrónica",
+        "71300": "Ingeniería Mecatrónica",
+
+        "71700": "Ingeniería Industrial e Innovación de Negocios",
+
+        "73100": "Arquitectura",
+
+        "101600": "Administración y Hospitalidad",
+
+        "21600": "Ingeniería en Innovación y Diseño"
+    };
+
+    return mapaCarreras[String(codigo).trim()] || null;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    iniciarMercado();
+    actualizarDropdowns();
+});
+
+function aplicarFiltros() {
+    const ocupados = ["Ocupados", "Desocupados", "Disponibles", "No disponibles"];
+    const posicion = ["Trabajadores", "Empleadores", "Cuenta propia", "Sin pago"];
+    let subocupados = 0;
+    let personasOcupadas = new Array(ocupados.length).fill(0);
+    let personasPosiciones = new Array(posicion.length).fill(0)
+
+    datosENOE.forEach(persona => {
+        const carrera = filtroActual.carrera === "Todas las carreras" || estandarizarCarrera(persona.carrera) === filtroActual.carrera;
+
+        if (carrera) {
+            const indexOcupados = persona.trabaja - 1;
+            const personasReales = persona.factor;
+            personasOcupadas[indexOcupados] += personasReales;
+
+            if (persona.subocupacion === 1) {
+                subocupados += personasReales;
+            }
+
+            const indexPosicion = persona.posicion - 1;
+            personasPosiciones[indexPosicion] += personasReales;
+        }
+    });
+
+    document.getElementById("totalSubocupados").textContent = subocupados;
+
+    graficaBarras({
+        etiquetas: ocupados,
+        datasets: [{
+            label: 'Profesionales',
+            data: [...personasOcupadas],
+            backgroundColor: '#88803c'
+        }],
+        id: 'ocupados',
+        title: 'Estado laboral de los profesionales',
+        personas: 'Profesionales',
+        nombre: 'chart-ocupacion'
+    });
+
+    graficaBarras({
+        etiquetas: posicion,
+        datasets: [{
+            label: 'Profesionales',
+            data: [...personasPosiciones],
+            backgroundColor: '#88803c'
+        }],
+        id: 'posicion',
+        title: 'Posición de los profesionales',
+        personas: 'Profesionales',
+        nombre: 'chart-posicion'
+    });
+}
+
+function graficaBarras(datos) {
+    const nombre = datos.nombre
+    const canvas = document.getElementById(datos.id);
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+
+    if (window[nombre]) {
+        window[nombre].destroy();
+    }
+
+    window[nombre] = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: datos.etiquetas,
+            datasets: datos.datasets
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: datos.title,
+                    font: { size: 18, weight: 'bold' },
+                    color: '#000'
+                },
+                datalabels: {
+                    anchor: 'end',
+                    align: 'right',
+                    formatter: Math.round,
+                    font: { weight: 'bold' }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: datos.personas
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: '#333',
+                        font: { size: 12 }
+                    },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+}

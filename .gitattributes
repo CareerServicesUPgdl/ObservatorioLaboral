@@ -1,0 +1,2 @@
+backend/datos/ENOE.csv filter=lfs diff=lfs merge=lfs -text
+backend/datos/ENOE.json filter=lfs diff=lfs merge=lfs -text

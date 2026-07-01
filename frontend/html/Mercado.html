@@ -7,6 +7,7 @@
     <link rel="icon" href="../assets/Logo.png" type="image/png">
     <title>Observatorio Laboral Up</title>
     <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/mercado.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <script src="../js/config.js"></script>
     <script src="../js/mercado.js"></script>
@@ -107,7 +108,30 @@
             </div>
 
         </div>
+
+        <div class="dashboard-container display">
+            <div class="barras">
+                <canvas id="ocupados"></canvas>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-title">Profesionales Subocupados</div>
+                <div class="kpi-value" id="totalSubocupados">0</div>
+                <div class="kpi-subtitle">ENOE Jalisco</div>
+            </div>
+        </div>
+
+        <div class="dashboard-container display">
+            <div class="barras">
+                <canvas id="posicion"></canvas>
+            </div>
+
+        </div>
+
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 </body>
 
 </html>

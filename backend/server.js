@@ -7,6 +7,8 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const app = express();
 const { getSheet } = require('./sheets.js');
+const fs = require('fs');
+const aJson = require("./CVS_a_JSON.js");
 
 const resend = new Resend(process.env.resendAPI);
 
@@ -154,11 +156,21 @@ app.post("/login", async (req, res) => {
 //Aqui se inicia el servidor
 (async () => {
     await cargarDatos();
+    await iniciarENOE();
+    await cargarENOE();
 
     app.listen(process.env.port, () => {
         console.log(`Servidor en ${process.env.port}`);
     });
 })();
+
+async function iniciarENOE() {
+
+    if (!fs.existsSync("./data/ENOE.json")) {
+        await aJson();
+    }
+
+}
 
 //aqui se verifica que el usuario tenga token
 function verificarToken(req, res, next) {
@@ -568,6 +580,28 @@ app.get('/Diciembre2024Data', async (req, res) => {
     res.json(datosDiciembre2024);
 });
 
+//ENOE
+app.get('/enoeData', async (req, res) => {
+    res.json(datosFiltradosENOE)
+});
+
+let datosENOE = [];
+let datosFiltradosENOE = [];
+
+function cargarENOE() {
+
+    datosENOE = JSON.parse(
+        fs.readFileSync('./datos/ENOE.json', 'utf8')
+    );
+
+    datosFiltradosENOE = datosENOE.filter(dato =>
+        dato.estado === 14 &&
+        (dato.grado === 7 || dato.grado === 6)&&
+        dato.carrera !== 0
+    );
+}
+
+//En caso de que algun archivo cambie o se quiera actualizar la base de datos, se puede hacer desde el frontend
 app.post('/actualizarDatos', verificarToken, async (req, res) => {
     try {
         if (req.usuario.cuenta !== "Admin") {

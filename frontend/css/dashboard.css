@@ -58,7 +58,7 @@
 
 .dropdown-options li:hover {
     color: white;
-    background-color: rgb(98, 0, 0); /* Un rojo un poco más claro o gris oscuro */
+    background-color: rgb(98, 0, 0);
 }
 
 .show-dropdown {
