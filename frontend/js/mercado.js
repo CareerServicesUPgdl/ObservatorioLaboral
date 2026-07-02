@@ -189,12 +189,17 @@ function aplicarFiltros() {
 
     document.getElementById("totalSubocupados").textContent = subocupados;
 
-    graficaBarras({
+    graficaPie({
         etiquetas: ocupados,
         datasets: [{
             label: 'Profesionales',
             data: [...personasOcupadas],
-            backgroundColor: '#88803c'
+            backgroundColor: [
+                "#620000", // Vino oscuro
+                "#8A1538", // Granate
+                "#A63D40", // Vino claro
+                "#B59A30"  // Dorado
+            ]
         }],
         id: 'ocupados',
         title: 'Estado laboral de los profesionales',
@@ -202,12 +207,17 @@ function aplicarFiltros() {
         nombre: 'chart-ocupacion'
     });
 
-    graficaBarras({
+    graficaPie({
         etiquetas: posicion,
         datasets: [{
             label: 'Profesionales',
             data: [...personasPosiciones],
-            backgroundColor: '#88803c'
+            backgroundColor: [
+                "#620000", // Vino oscuro
+                "#8A1538", // Granate
+                "#A63D40", // Vino claro
+                "#B59A30"  // Dorado
+            ]
         }],
         id: 'posicion',
         title: 'Posición de los profesionales',
@@ -216,58 +226,55 @@ function aplicarFiltros() {
     });
 }
 
-function graficaBarras(datos) {
-    const nombre = datos.nombre
+function graficaPie(datos) {
+    const nombre = datos.nombre;
     const canvas = document.getElementById(datos.id);
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
+    Chart.register(ChartDataLabels);
 
     if (window[nombre]) {
         window[nombre].destroy();
     }
 
     window[nombre] = new Chart(ctx, {
-        type: 'bar',
+        type: 'pie',
         data: {
             labels: datos.etiquetas,
-            datasets: datos.datasets
+            datasets: [{
+                data: datos.datasets[0].data,
+                backgroundColor: datos.datasets[0].backgroundColor,
+                borderColor: "#fff",
+                borderWidth: 2
+            }]
         },
         options: {
-            indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false
+                    position: 'right'
                 },
                 title: {
                     display: true,
                     text: datos.title,
-                    font: { size: 18, weight: 'bold' },
+                    font: {
+                        size: 18,
+                        weight: 'bold'
+                    },
                     color: '#000'
                 },
                 datalabels: {
-                    anchor: 'end',
-                    align: 'right',
-                    formatter: Math.round,
-                    font: { weight: 'bold' }
-                }
-            },
-            scales: {
-                x: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: datos.personas
+                    color: '#fff',
+                    font: {size: 12 },
+                    display: (context) => context.dataset.data[context.dataIndex] > 0,
+                    formatter: (value, ctx) => {
+                        const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                        if (total === 0) return "0%"; // Evita división por cero
+                        const percentage = ((value * 100) / total).toFixed(1) + "%";
+                        return percentage;
                     }
-                },
-                y: {
-                    ticks: {
-                        color: '#333',
-                        font: { size: 12 }
-                    },
-                    grid: { display: false }
                 }
             }
         }
