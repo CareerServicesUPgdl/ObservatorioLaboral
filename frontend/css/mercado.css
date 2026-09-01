@@ -39,3 +39,59 @@
     font-size: 13px;
     color: #999;
 }
+
+.top-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.top-title {
+    margin-top: 5px;
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: rgb(98, 0, 0);
+    text-align: center;
+}
+
+.top-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.top-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 6px;
+    background-color: #f8f8f8;
+    transition: transform 0.2s;
+}
+
+.top-item:hover {
+    transform: translateX(5px);
+}
+
+.top-rank {
+    min-width: 35px;
+    font-size: 18px;
+    font-weight: bold;
+    color: rgb(98, 0, 0);
+}
+
+.top-career {
+    flex: 1;
+    font-size: 14px;
+    color: #444;
+    margin-right: 20px;
+}
+
+.top-value {
+    font-size: 16px;
+    font-weight: bold;
+    color: rgb(98, 0, 0);
+}

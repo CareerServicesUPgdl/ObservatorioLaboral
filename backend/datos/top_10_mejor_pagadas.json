@@ -1,0 +1,52 @@
+[
+  {
+    "rango": 1,
+    "carrera": "Matemáticas",
+    "valor": "$29,887"
+  },
+  {
+    "rango": 2,
+    "carrera": "Medicina general",
+    "valor": "$27,823"
+  },
+  {
+    "rango": 3,
+    "carrera": "Finanzas banca y seguros",
+    "valor": "$27,290"
+  },
+  {
+    "rango": 4,
+    "carrera": "Arquitectura y urbanismo",
+    "valor": "$26,822"
+  },
+  {
+    "rango": 5,
+    "carrera": "Ciencias políticas",
+    "valor": "$26,095"
+  },
+  {
+    "rango": 6,
+    "carrera": "Electrónica automatización y aplicaciones de la mecánica-eléctrica",
+    "valor": "$25,953"
+  },
+  {
+    "rango": 7,
+    "carrera": "Construcción e ingeniería civil",
+    "valor": "$25,603"
+  },
+  {
+    "rango": 8,
+    "carrera": "Diseño industrial de moda e interiores",
+    "valor": "$25,503"
+  },
+  {
+    "rango": 9,
+    "carrera": "Planeación evaluación e investigación educativa",
+    "valor": "$25,490"
+  },
+  {
+    "rango": 10,
+    "carrera": "Ciencias computacionales",
+    "valor": "$24,983"
+  }
+]

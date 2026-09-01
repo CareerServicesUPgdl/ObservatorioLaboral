@@ -90,12 +90,17 @@ function actualizarDropdowns() {
 }
 
 let datosENOE = [];
+let todosLosDatos = [];
 
 async function iniciarMercado() {
     const response = await fetch(`${API_URL}/enoeData`);
     const data = await response.json();
     datosENOE = Array.isArray(data) ? data : [];
 
+    const qs = await fetch(`${API_URL}/qsData`);
+    todosLosDatos = await qs.json();
+
+    empleabilidadCarrera();
     aplicarFiltros();
     actualizarDropdowns();
 }
@@ -187,7 +192,7 @@ function aplicarFiltros() {
         }
     });
 
-    document.getElementById("totalSubocupados").textContent = subocupados;
+    //document.getElementById("totalSubocupados").textContent = subocupados;
 
     graficaPie({
         etiquetas: ocupados,
@@ -280,3 +285,181 @@ function graficaPie(datos) {
         }
     });
 }
+
+async function cargarTopDesempleados() {
+    try {
+        const respuesta = await fetch(`${API_URL}/10desempleados`);
+        const resultado = await respuesta.json();
+        const lista = document.getElementById('topDesempleados');
+
+        lista.innerHTML = '';
+
+        resultado.data.forEach(item => {
+            const elemento = document.createElement('div');
+            elemento.classList.add('top-item');
+
+            elemento.innerHTML = `
+                <div class="top-rank">
+                    ${item.rango}
+                </div>
+
+                <div class="top-career">
+                    ${item.carrera}
+                </div>
+
+                <div class="top-value">
+                    ${item.valor}
+                </div>
+            `;
+
+            lista.appendChild(elemento);
+        });
+
+    } catch (error) {
+        console.error('Error cargando el Top 10:', error);
+    }
+}
+
+async function cargarTopPagadas() {
+    try {
+        const respuesta = await fetch(`${API_URL}/10pagadas`);
+        const resultado = await respuesta.json();
+        const lista = document.getElementById('topPagadas');
+
+        lista.innerHTML = '';
+
+        resultado.data.forEach(item => {
+            const elemento = document.createElement('div');
+            elemento.classList.add('top-item');
+
+            elemento.innerHTML = `
+                <div class="top-rank">
+                    ${item.rango}
+                </div>
+
+                <div class="top-career">
+                    ${item.carrera}
+                </div>
+
+                <div class="top-value">
+                    ${item.valor}
+                </div>
+            `;
+
+            lista.appendChild(elemento);
+        });
+
+    } catch (error) {
+        console.error('Error cargando el Top 10:', error);
+    }
+}
+
+function empleabilidadCarrera(){
+    const empleabilidadPorCarrera = {};
+
+    todosLosDatos.forEach(alumno => {
+        if (alumno.campus == "Guadalajara"){
+            const carrera = alumno.carrera.trim();
+
+            if (!empleabilidadPorCarrera[carrera]) {
+                empleabilidadPorCarrera[carrera] = {
+                    carrera: carrera,
+                    empleados: 0,
+                    noEmpleados: 0
+                };
+            }
+
+            const trabaja = alumno.trabaja && (
+                alumno.trabaja.trim().toLowerCase() === "sí" ||
+                alumno.trabaja.trim().toLowerCase() === "si"
+            );
+
+            if (trabaja) {
+                empleabilidadPorCarrera[carrera].empleados++;
+            } else {
+                empleabilidadPorCarrera[carrera].noEmpleados++;
+            }
+        }
+    });
+
+    const datosEmpleabilidad = Object.values(empleabilidadPorCarrera).map(item => {
+        const total = item.empleados + item.noEmpleados;
+
+        return {
+            carrera: item.carrera,
+            empleados: item.empleados,
+            noEmpleados: item.noEmpleados,
+            porcentaje: total > 0 ? Number(((item.empleados / total) * 100).toFixed(1)) : 0
+        };
+    });
+
+    const top5 = datosEmpleabilidad
+        .sort((a, b) => b.porcentaje - a.porcentaje)
+        .slice(0, 5);
+
+    const last5 = datosEmpleabilidad
+        .sort((a, b) => a.porcentaje - b.porcentaje)
+        .slice(0, 5);
+
+    console.log("Top 5 carreras con mayor empleabilidad:", top5);
+    console.log("Last 5 carreras con menor empleabilidad:", last5);
+
+    const lista = document.getElementById('topEmpleabilidad');
+
+    if (!lista) {
+        console.error("No existe el elemento con id='topEmpleabilidad'");
+        return;
+    }
+
+    lista.innerHTML = '';
+
+    top5.forEach((item, i) => {
+        const elemento = document.createElement('div');
+        elemento.classList.add('top-item');
+
+        elemento.innerHTML = `
+            <div class="top-rank">
+                ${i + 1}
+            </div>
+            <div class="top-career">
+                ${item.carrera}
+            </div>
+            <div class="top-value">
+                ${item.porcentaje}%
+            </div>
+        `;
+
+        lista.appendChild(elemento);
+    });
+
+    const lista2 = document.getElementById('lastEmpleabilidad');
+
+    if (!lista2) {
+        console.error("No existe el elemento con id='lastEmpleabilidad'");
+        return;
+    }
+
+    lista2.innerHTML = '';
+
+    last5.forEach((item, i) => {
+        const elemento = document.createElement('div');
+        elemento.classList.add('top-item');
+
+        elemento.innerHTML = `
+            <div class="top-rank">
+                ${i + 1}
+            </div>
+            <div class="top-career">
+                ${item.carrera}
+            </div>
+            <div class="top-value">
+                ${item.porcentaje}%
+            </div>
+        `;
+
+        lista2.appendChild(elemento);
+    });
+}
+
+cargarTopDesempleados();
+cargarTopPagadas();

@@ -96,6 +96,37 @@
         <h1>Análisis de Mercado en Jalisco</h1>
 
         <div class="conteiner">
+            <div class="top-card">
+                <h2 class="top-title">Top 10 carreras mejor pagadas</h2>
+
+                <div id="topPagadas" class="top-list">
+                </div>
+            </div>
+
+            <div class="top-card">
+                <h2 class="top-title">Top 10 carreras con mayor desempleo</h2>
+
+                <div id="topDesempleados" class="top-list">
+                </div>
+            </div>
+        </div>
+
+        <div class="conteiner">
+            <div class="top-card">
+                <h2 class="top-title">Top 5 carreras de la Universidad Panamericana con mayor empleabilidad</h2>
+
+                <div id="topEmpleabilidad" class="top-list">
+                </div>
+            </div>
+            <div class="top-card">
+                <h2 class="top-title">Top 5 carreras de la Universidad Panamericana con menor empleabilidad</h2>
+
+                <div id="lastEmpleabilidad" class="top-list">
+                </div>
+            </div>
+        </div>
+
+        <div class="conteiner">
 
             <div class="dropdown" id="dropdownCarrera">
                 <div class="dropdown-header" onclick="dropdownCarrera()">
@@ -109,16 +140,17 @@
 
         </div>
 
+        <div class="conteiner">
         <div class="dashboard-container display">
             <div class="barras">
                 <canvas id="ocupados"></canvas>
             </div>
 
-            <div class="kpi-card">
+            <!--<div class="kpi-card">
                 <div class="kpi-title">Profesionales Subocupados</div>
                 <div class="kpi-value" id="totalSubocupados">0</div>
                 <div class="kpi-subtitle">ENOE Jalisco</div>
-            </div>
+            </div>-->
         </div>
 
         <div class="dashboard-container display">
@@ -127,7 +159,7 @@
             </div>
 
         </div>
-
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

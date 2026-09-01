@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const app = express();
 const { getSheet } = require('./sheets.js');
 const fs = require('fs');
-const aJson = require("./CVS_a_JSON.js");
+const { generarENOE, top, top2 } = require("./CVS_a_JSON.js");
 
 const resend = new Resend(process.env.resendAPI);
 
@@ -167,7 +167,13 @@ app.post("/login", async (req, res) => {
 async function iniciarENOE() {
 
     if (!fs.existsSync("./data/ENOE.json")) {
-        await aJson();
+        await generarENOE();
+    }
+    if (!fs.existsSync("./data/top_10_mas_desempleados.json")){
+        await top();
+    }
+    if (!fs.existsSync("./data/top_10_mejor_pagadas.json")){
+        await top2();
     }
 
 }
@@ -622,5 +628,43 @@ app.post('/actualizarDatos', verificarToken, async (req, res) => {
             error: error.message
         });
 
+    }
+});
+
+app.get('/10desempleados', async (req, res) => {
+    try {
+        const data = JSON.parse(
+            fs.readFileSync('./datos/top_10_mas_desempleados.json', 'utf8')
+        );
+
+        res.status(200).json({
+            success: true,
+            data: data
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+app.get('/10pagadas', async (req, res) => {
+    try {
+        const data = JSON.parse(
+            fs.readFileSync('./datos/top_10_mejor_pagadas.json', 'utf8')
+        );
+
+        res.status(200).json({
+            success: true,
+            data: data
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
     }
 });

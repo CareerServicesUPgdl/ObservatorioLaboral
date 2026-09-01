@@ -1,0 +1,52 @@
+[
+  {
+    "rango": 1,
+    "carrera": "Ecología y ciencias ambientales",
+    "valor": "9.1%"
+  },
+  {
+    "rango": 2,
+    "carrera": "Tecnología para la protección del medio ambiente",
+    "valor": "8.9%"
+  },
+  {
+    "rango": 3,
+    "carrera": "Industria de la minería extracción y metalurgia",
+    "valor": "8.8%"
+  },
+  {
+    "rango": 4,
+    "carrera": "Planeación evaluación e investigación educativa",
+    "valor": "8.6%"
+  },
+  {
+    "rango": 5,
+    "carrera": "Biología",
+    "valor": "7.5%"
+  },
+  {
+    "rango": 6,
+    "carrera": "Economía",
+    "valor": "7.2%"
+  },
+  {
+    "rango": 7,
+    "carrera": "Criminología y criminalística",
+    "valor": "6.0%"
+  },
+  {
+    "rango": 8,
+    "carrera": "Comunicación y periodismo",
+    "valor": "5.5%"
+  },
+  {
+    "rango": 9,
+    "carrera": "Hospitalidad y turismo",
+    "valor": "5.4%"
+  },
+  {
+    "rango": 10,
+    "carrera": "Administración en el ámbito de la ingeniería y la construcción",
+    "valor": "5.3%"
+  }
+]
