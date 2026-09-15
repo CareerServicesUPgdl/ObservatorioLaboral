@@ -63,7 +63,7 @@ app.post("/registro", async (req, res) => {
         const token = jwt.sign(
         { id: nuevoUsuario._id },
         process.env.tokenSecret,
-        { expiresIn: "1d" }
+        { expiresIn: "30d" }
     );
     console.log("enviando correo ...")
     const link = `${process.env.URL}/verificar/${token}`; //aqui se crea el link para verficar al usuairio
@@ -143,7 +143,7 @@ app.post("/login", async (req, res) => {
                 cuenta: usuario.cuenta
             },
             process.env.tokenSecret,
-            { expiresIn: "1h" }
+            { expiresIn: "30d" }
         );
 
         res.json({ token });
