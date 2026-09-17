@@ -315,7 +315,7 @@ async function cargarDatos() {
 
     try {
         //QS
-        const rows = await getSheet(process.env.IDSheetsQS, "'Respuestas de formulario 1'!A2:AD4600");
+        const rows = await getSheet(process.env.IDSheetsQS, "'Respuestas de formulario 1'!A2:AD4850");
 
         if (!rows || rows.length === 0) return res.status(404).json([]);
 
