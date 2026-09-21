@@ -29,8 +29,10 @@ fetch(`${API_URL}/perfil`, {
 
         if (data.usuario.cuenta === "Admin") {
             document.getElementById("administracion").classList.remove("ocultar");
+            document.getElementById("nuevoPost").classList.remove("ocultar");
         } else {
             document.getElementById("administracion").classList.add("ocultar");
+            document.getElementById("nuevoPost").classList.add("ocultar");
         }
     })
     .catch(error => {
@@ -39,3 +41,11 @@ fetch(`${API_URL}/perfil`, {
         localStorage.removeItem("token");
         window.location.href = "../html/Login.html";
     });
+
+function abrirModal() {
+    document.getElementById("modalPost").classList.remove("ocultar");
+}
+
+function cerrarModal() {
+    document.getElementById("modalPost").classList.add("ocultar");
+}
