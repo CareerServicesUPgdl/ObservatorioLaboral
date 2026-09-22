@@ -25,11 +25,6 @@
     color: white;
 }
 
-.btn.active:hover {
-    background-color: rgb(79, 0, 0);
-    color: white;
-}
-
 .btn:hover {
     background-color: rgb(79, 0, 0);
     cursor: pointer;
@@ -90,4 +85,71 @@
     background: none;
     font-size: 25px;
     cursor: pointer;
+}
+
+.contenedor-articulos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    padding: 20px 50px;
+}
+
+.tarjeta-articulo {
+    margin: 25px;
+    background-color: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.tarjeta-articulo:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.contenido-articulo {
+    padding: 20px;
+}
+
+.contenido-articulo h2 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: rgb(98, 0, 0);
+}
+
+.contenido-articulo p {
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.fecha-articulo {
+    font-size: 13px;
+    color: #777;
+}
+
+.box {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-edit {
+    background-color: transparent;
+    border: rgb(98, 0, 0) solid 1px;
+    color: rgb(98, 0, 0);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-edit.active:hover {
+    background-color: rgb(79, 0, 0);
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: rgb(79, 0, 0);
+    cursor: pointer;
+    color:white;
 }

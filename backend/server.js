@@ -668,3 +668,113 @@ app.get('/10pagadas', async (req, res) => {
         });
     }
 });
+
+const articuloSchema = new mongoose.Schema({
+    titulo: {
+        type: String,
+        required: true
+    },
+    descripcion: {
+        type: String,
+        required: true
+    },
+    fecha: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+const Articulo = mongoose.model("Articulo", articuloSchema);
+
+app.post("/articulos", async (req, res) => {
+    try {
+        const { titulo, descripcion } = req.body;
+
+        if (!titulo || !descripcion) {
+            return res.status(400).json({
+                mensaje: "El título y la descripción son obligatorios"
+            });
+        }
+
+        const articulo = new Articulo({
+            titulo,
+            descripcion
+        });
+
+        await articulo.save();
+
+        res.status(201).json({
+            mensaje: "Artículo creado correctamente",
+            articulo
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            mensaje: "Error al guardar el artículo"
+        });
+    }
+});
+
+app.get("/articulos", async (req, res) => {
+    try {
+        const articulos = await Articulo.find()
+            .sort({ fecha: -1 });
+
+        res.json(articulos);
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            mensaje: "Error al obtener los artículos"
+        });
+    }
+});
+
+app.delete("/articulos/:id", async (req, res) => {
+    try {
+        await Articulo.findByIdAndDelete(req.params.id);
+
+        res.json({
+            mensaje: "Artículo eliminado correctamente"
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            mensaje: "Error al eliminar el artículo"
+        });
+    }
+});
+
+app.put("/articulos/:id", async (req, res) => {
+    try {
+        const { titulo, descripcion } = req.body;
+
+        const articulo = await Articulo.findByIdAndUpdate(
+            req.params.id,
+            {
+                titulo,
+                descripcion
+            },
+            {
+                new: true
+            }
+        );
+
+        res.json({
+            mensaje: "Artículo actualizado correctamente",
+            articulo
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            mensaje: "Error al actualizar el artículo"
+        });
+    }
+});

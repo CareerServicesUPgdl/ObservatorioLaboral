@@ -122,9 +122,15 @@
         <div id="modalPost" class="modal ocultar">
             <div class="modal-contenido"> <button class="cerrar1" onclick="cerrarModal()">×</button>
                 <h2>Nuevo post</h2> <label>Título</label> <input type="text" id="tituloPost"> <label>Descripción</label>
-                <textarea id="descripcionPost"></textarea> <button class="btn">Publicar</button>
+                <textarea id="descripcionPost"></textarea> <button class="btn btn-publicar"
+                    onclick="publicarPost()">Publicar</button>
             </div>
         </div>
+
+        <section class="blog">
+            <div id="listaArticulos"></div>
+        </section>
+    </div>
 </body>
 
 </html>
