@@ -192,8 +192,6 @@ function aplicarFiltros() {
         }
     });
 
-    //document.getElementById("totalSubocupados").textContent = subocupados;
-
     graficaPie({
         etiquetas: ocupados,
         datasets: [{
@@ -270,9 +268,17 @@ function graficaPie(datos) {
                     },
                     color: '#000'
                 },
+                subtitle: {
+                    display: true,
+                    text: "Información obtenida por medio de la ENOE",
+                    color: '#666',
+                    padding: {
+                        bottom: 10
+                    }
+                },
                 datalabels: {
                     color: '#fff',
-                    font: {size: 12 },
+                    font: { size: 12 },
                     display: (context) => context.dataset.data[context.dataIndex] > 0,
                     formatter: (value, ctx) => {
                         const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
@@ -354,11 +360,11 @@ async function cargarTopPagadas() {
     }
 }
 
-function empleabilidadCarrera(){
+function empleabilidadCarrera() {
     const empleabilidadPorCarrera = {};
 
     todosLosDatos.forEach(alumno => {
-        if (alumno.campus == "Guadalajara"){
+        if (alumno.campus == "Guadalajara") {
             const carrera = alumno.carrera.trim();
 
             if (!empleabilidadPorCarrera[carrera]) {

@@ -1,8 +1,8 @@
 const token = localStorage.getItem("token");
 
-var campus="";
-var facultad="";
-var carrera="";
+var campus = "";
+var facultad = "";
+var carrera = "";
 
 if (!token) {
     window.location.href = "../html/Login.html";
@@ -11,7 +11,7 @@ if (!token) {
 function logout() {
     localStorage.removeItem("token");
     window.location.href = "../html/Login.html";
-    
+
 }
 
 fetch(`${API_URL}/perfil`, {
@@ -19,33 +19,33 @@ fetch(`${API_URL}/perfil`, {
         "Authorization": token
     }
 })
-.then(async res => {
-    const data = await res.json();
+    .then(async res => {
+        const data = await res.json();
 
-    if (!res.ok) {
-        throw new Error(data.error || "Error de autenticación");
-    }
+        if (!res.ok) {
+            throw new Error(data.error || "Error de autenticación");
+        }
 
-    return data;
-})
-.then(data => {
-    document.getElementById("nombreUsuario").innerText = data.usuario.email;
-    document.getElementById("cuenta").innerText = data.usuario.cuenta;
-    document.getElementById("nombre").innerText = data.usuario.nombre;
-    document.getElementById("apellido").innerText = data.usuario.apellido;
+        return data;
+    })
+    .then(data => {
+        document.getElementById("nombreUsuario").innerText = data.usuario.email;
+        document.getElementById("cuenta").innerText = data.usuario.cuenta;
+        document.getElementById("nombre").innerText = data.usuario.nombre;
+        document.getElementById("apellido").innerText = data.usuario.apellido;
 
-    if (data.usuario.cuenta === "Admin") {
-        document.getElementById("administracion").classList.remove("ocultar");
-    }else{
-        document.getElementById("administracion").classList.add("ocultar");
-    }
-})
-.catch(error => {
-    console.log("Error:", error.message);
+        if (data.usuario.cuenta === "Admin") {
+            document.getElementById("administracion").classList.remove("ocultar");
+        } else {
+            document.getElementById("administracion").classList.add("ocultar");
+        }
+    })
+    .catch(error => {
+        console.log("Error:", error.message);
 
-    localStorage.removeItem("token");
-    window.location.href = "../html/Login.html";
-});
+        localStorage.removeItem("token");
+        window.location.href = "../html/Login.html";
+    });
 
 function dropdownCampus() {
     document.getElementById("dropdownOptionsCampus").classList.toggle("show-dropdown");
@@ -70,7 +70,7 @@ function dropdownContrato() {
 function seleccionarCampus(valor) {
     filtroActual.campus = valor;
     document.getElementById('selected-campus').textContent = valor;
-    
+
     filtroActual.facultad = "Todas las Facultades";
     document.getElementById('selected-facultad').textContent = "Todas las Facultades";
     filtroActual.carrera = "Todas las carreras";
@@ -84,11 +84,11 @@ function seleccionarCampus(valor) {
 function seleccionarFacultad(valor) {
     filtroActual.facultad = valor;
     document.getElementById('selected-facultad').textContent = valor;
-    
+
     filtroActual.carrera = "Todas las carreras";
     document.getElementById('selected-carrera').textContent = "Todas las carreras";
 
-    filtroActual.periodo = "Todas los periodos";
+    filtroActual.periodo = "Todos los periodos";
     document.getElementById('selected-periodo').textContent = "Todos los periodos";
 
     filtroActual.contrato = "Todos los contratos";
@@ -102,7 +102,7 @@ function seleccionarCarrera(valor) {
     filtroActual.carrera = valor;
     document.getElementById('selected-carrera').textContent = valor;
 
-    filtroActual.periodo = "Todas los periodos";
+    filtroActual.periodo = "Todos los periodos";
     document.getElementById('selected-periodo').textContent = "Todos los periodos";
 
     filtroActual.contrato = "Todos los contratos";
@@ -126,12 +126,12 @@ function seleccionarPeriodo(valor) {
 function seleccionarContrato(valor) {
     filtroActual.contrato = valor;
     document.getElementById('selected-contrato').textContent = valor;
-    
+
     actualizarDropdowns();
     aplicarFiltros();
 }
 
-window.onclick = function(event) {
+window.onclick = function (event) {
     if (!event.target.closest('.dropdown')) {
         const dropdown = document.getElementById("dropdownOptionsCampus");
         if (dropdown.classList.contains('show-dropdown')) {
@@ -176,36 +176,38 @@ async function iniciarDashboard() {
     }
 }
 
+
+import { graficaEmpleabilidad } from './graficas.js';
 function aplicarFiltros() {
     let empleados = 0;
     let noEmpleados = 0;
 
-    const sueldos=["Prefiero no responder","Menos de $5,000","$5,000 a $10,000","$10,001 a $15,000","$15,001 a $20,000","$10,000-$20,000","$20,001 a $25,000","$25,001 a $30,000","$20,001-$30,000","$30,001 a $35,000","$35,001 a $40,000","$30,001-$40,000","$40,001-$50,000","Más de $40,000","Más de $50,000"];
+    const sueldos = ["Prefiero no responder", "Menos de $5,000", "$5,000 a $10,000", "$10,001 a $15,000", "$15,001 a $20,000", "$10,000-$20,000", "$20,001 a $25,000", "$25,001 a $30,000", "$20,001-$30,000", "$30,001 a $35,000", "$35,001 a $40,000", "$30,001-$40,000", "$40,001-$50,000", "Más de $40,000", "Más de $50,000"];
     const tiempos = ["De 1ro a 3er semestre", "De 3ro a 5to semestre", "6to semestre", "7mo semestre", "8vo semestre", "9no semestre", "10mo semestre"];
     const categoriasSector = ["automotriz", "comercio", "consumo", "educación", "farmacéutica", "financiero", "retail", "servicios", "tecnología", "turismo", "otro"];
-    
+
     let alumnosPorSector = new Array(categoriasSector.length).fill(0);
     const datosGraficaTiempo = {};
     const datosGraficaSueldos = {};
 
     todosLosDatos.forEach(alumno => {
-        const cumpleCampus = filtroActual.campus === "Todos los campus" || 
-                             alumno.campus.trim().toLowerCase() === filtroActual.campus.trim().toLowerCase();
-                             
-        const cumpleFacultad = filtroActual.facultad === "Todas las Facultades" || 
-                               alumno.facultad.trim().toLowerCase() === filtroActual.facultad.trim().toLowerCase();
-                               
-        const cumpleCarrera = filtroActual.carrera === "Todas las carreras" || 
-                              alumno.carrera.trim().toLowerCase() === filtroActual.carrera.trim().toLowerCase();
+        const cumpleCampus = filtroActual.campus === "Todos los campus" ||
+            alumno.campus.trim().toLowerCase() === filtroActual.campus.trim().toLowerCase();
 
-        const cumpleContrato = filtroActual.contrato === "Todos los contratos" || 
-                               alumno.tipoContrato.trim().toLowerCase() === filtroActual.contrato.trim().toLowerCase();
+        const cumpleFacultad = filtroActual.facultad === "Todas las Facultades" ||
+            alumno.facultad.trim().toLowerCase() === filtroActual.facultad.trim().toLowerCase();
 
-        const cumplePeriodo = filtroActual.periodo === "Todos los periodos" || 
-                              alumno.egreso.trim().toLowerCase() === filtroActual.periodo.trim().toLowerCase();
+        const cumpleCarrera = filtroActual.carrera === "Todas las carreras" ||
+            alumno.carrera.trim().toLowerCase() === filtroActual.carrera.trim().toLowerCase();
+
+        const cumpleContrato = filtroActual.contrato === "Todos los contratos" ||
+            alumno.tipoContrato.trim().toLowerCase() === filtroActual.contrato.trim().toLowerCase();
+
+        const cumplePeriodo = filtroActual.periodo === "Todos los periodos" ||
+            alumno.egreso.trim().toLowerCase() === filtroActual.periodo.trim().toLowerCase();
 
         if (cumpleCampus && cumpleFacultad && cumpleCarrera && cumpleContrato && cumplePeriodo) {
-            const trabaja=alumno.trabaja && (alumno.trabaja.trim().toLowerCase() === "sí" || alumno.trabaja.trim().toLowerCase() === "si")
+            const trabaja = alumno.trabaja && (alumno.trabaja.trim().toLowerCase() === "sí" || alumno.trabaja.trim().toLowerCase() === "si")
             if (trabaja) {
                 //grafica empleabilidad
                 empleados++;
@@ -234,9 +236,9 @@ function aplicarFiltros() {
                 }
 
                 const categoriasEgresado = ["0-3 meses", "Más de 12 meses", "3-6 meses", "6-9 meses", "9-12 meses", "Antes de egresar"];
-                
+
                 if (categoriasEgresado.includes(tiempo)) {
-                    tiempo = "10mo semestre"; 
+                    tiempo = "10mo semestre";
                 }
 
                 const index = tiempos.indexOf(tiempo);
@@ -249,7 +251,7 @@ function aplicarFiltros() {
                 let indexSector = categoriasSector.indexOf(sectorAlumno);
 
                 if (indexSector === -1) {
-                    indexSector = 10; 
+                    indexSector = 10;
                 }
 
                 alumnosPorSector[indexSector]++;
@@ -262,13 +264,13 @@ function aplicarFiltros() {
                     indexSueldo = sueldos.indexOf("$5,000 a $10,000");
                 } else if (sueldoAlumno.trim() === "$10,000-$20,001" || sueldoAlumno.trim() === "$10000-$20000") {
                     indexSueldo = sueldos.indexOf("$10,000-$20,000");
-                } else if (sueldoAlumno.trim() === "$20001-$30000"){
+                } else if (sueldoAlumno.trim() === "$20001-$30000") {
                     indexSueldo = sueldos.indexOf("$20,001-$30,000");
-                } else if (sueldoAlumno.trim() === "$30001-$40000"  || sueldoAlumno.trim() === "$30,000-$40,001"){
+                } else if (sueldoAlumno.trim() === "$30001-$40000" || sueldoAlumno.trim() === "$30,000-$40,001") {
                     indexSueldo = sueldos.indexOf("$30,001-$40,000");
-                } else if (sueldoAlumno.trim() === "$40000-$50000"){
+                } else if (sueldoAlumno.trim() === "$40000-$50000") {
                     indexSueldo = sueldos.indexOf("$40,001-$50,000");
-                } else if (sueldoAlumno.trim() === "Más de $51,000"){
+                } else if (sueldoAlumno.trim() === "Más de $51,000") {
                     indexSueldo = sueldos.indexOf("Más de $50,000");
                 }
 
@@ -301,16 +303,16 @@ function aplicarFiltros() {
 
 function actualizarDropdowns() {
     const datosPorCampus = todosLosDatos.filter(alumno => {
-        return filtroActual.campus === "Todos los campus" || 
-               alumno.campus.trim() === filtroActual.campus.trim();
+        return filtroActual.campus === "Todos los campus" ||
+            alumno.campus.trim() === filtroActual.campus.trim();
     });
 
     const facultadesDisponibles = [...new Set(datosPorCampus.map(a => a.facultad))].sort();
     const listaFacultades = document.getElementById('dropdownOptionsFacultad');
-    
+
     listaFacultades.innerHTML = `<li onclick="seleccionarFacultad('Todas las Facultades')">Todas las Facultades</li>`;
     facultadesDisponibles.forEach(fac => {
-        if(fac) {
+        if (fac) {
             const li = document.createElement('li');
             li.textContent = fac;
             li.onclick = () => seleccionarFacultad(fac);
@@ -319,8 +321,8 @@ function actualizarDropdowns() {
     });
 
     const datosPorFacultad = datosPorCampus.filter(alumno => {
-        return filtroActual.facultad === "Todas las Facultades" || 
-               alumno.facultad.trim() === filtroActual.facultad.trim();
+        return filtroActual.facultad === "Todas las Facultades" ||
+            alumno.facultad.trim() === filtroActual.facultad.trim();
     });
 
     const carrerasDisponibles = [...new Set(datosPorFacultad.map(a => a.carrera.trim()))].sort();
@@ -328,7 +330,7 @@ function actualizarDropdowns() {
 
     listaCarreras.innerHTML = `<li onclick="seleccionarCarrera('Todas las carreras')">Todas las carreras</li>`;
     carrerasDisponibles.forEach(car => {
-        if(car) {
+        if (car) {
             const li = document.createElement('li');
             li.textContent = car;
             li.onclick = () => seleccionarCarrera(car);
@@ -337,8 +339,8 @@ function actualizarDropdowns() {
     });
 
     const datosPorCarrera = datosPorFacultad.filter(alumno => {
-        return filtroActual.carrera === "Todas las carreras" || 
-               alumno.carrera.trim() === filtroActual.carrera.trim();
+        return filtroActual.carrera === "Todas las carreras" ||
+            alumno.carrera.trim() === filtroActual.carrera.trim();
     });
 
     const contratosDisponibles = [...new Set(datosPorCarrera.map(a => a.tipoContrato))].sort();
@@ -346,7 +348,7 @@ function actualizarDropdowns() {
 
     listaContratos.innerHTML = `<li onclick="seleccionarContrato('Todos los contratos')">Todos los contratos</li>`;
     contratosDisponibles.forEach(cont => {
-        if(cont) {
+        if (cont) {
             const li = document.createElement('li');
             li.textContent = cont;
             li.onclick = () => seleccionarContrato(cont);
@@ -359,17 +361,13 @@ function actualizarDropdowns() {
 
     listaPeriodos.innerHTML = `<li onclick="seleccionarPeriodo('Todos los periodos')">Todos los periodos</li>`;
     periodosDisponibles.forEach(per => {
-        if(per) {
+        if (per) {
             const li = document.createElement('li');
             li.textContent = per;
             li.onclick = () => seleccionarPeriodo(per);
             listaPeriodos.appendChild(li);
         }
     });
-
-    if(filtroActual.periodo == "Todas los periodos") {
-        seleccionarPeriodo("Todos los periodos");
-    }
 }
 
 async function restablecerFiltros() {
@@ -401,54 +399,6 @@ function obtenerColorCarrera(carrera) {
     return coloresUP[Math.abs(hash) % coloresUP.length];
 }
 
-function graficaEmpleabilidad(si, no) {
-    const ctx = document.getElementById('empleabilidad').getContext('2d');
-
-    if (window.chartEmpleo) {
-        window.chartEmpleo.destroy();
-    }
-
-    window.chartEmpleo = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: ['Trabajan', 'No Trabajan'],
-            datasets: [{
-                label: 'Situación Laboral',
-                data: [si, no],
-                backgroundColor: ['#88803c', '#710800'],
-                borderWidth: 1
-            }]
-        },
-        plugins: [ChartDataLabels],
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { 
-                    position: 'top',
-                    labels: { color: '#333', font: { size: 14 } }
-                },
-                title: { 
-                    display: true, 
-                    text: 'Índice de empleabilidad',
-                    font: { size: 18},
-                    color: '#000000' 
-                },
-                datalabels: {
-                    color: '#fff',
-                    font: {size: 12 },
-                    display: (context) => context.dataset.data[context.dataIndex] > 0,
-                    formatter: (value, ctx) => {
-                        const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                        if (total === 0) return "0%"; // Evita división por cero
-                        const percentage = ((value * 100) / total).toFixed(1) + "%";
-                        return percentage;
-                    }
-                }
-            }
-        }
-    });
-}
-
 function graficaColocacion(datosProcesados) {
     const canvas = document.getElementById('graficaColocacion');
     if (!canvas) return;
@@ -467,7 +417,7 @@ function graficaColocacion(datosProcesados) {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false, 
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     position: 'bottom',
@@ -485,7 +435,7 @@ function graficaColocacion(datosProcesados) {
                     padding: { bottom: 20 }
                 },
                 datalabels: {
-                    display: false 
+                    display: false
                 }
             },
             scales: {
@@ -537,12 +487,12 @@ function graficaSector(datos) {
             datasets: datos.datasets
         },
         options: {
-            indexAxis: 'y', 
+            indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false 
+                    display: false
                 },
                 title: {
                     display: true,
@@ -566,7 +516,7 @@ function graficaSector(datos) {
                         text: 'Egresados'
                     }
                 },
-                y: { 
+                y: {
                     ticks: {
                         color: '#333',
                         font: { size: 12 }
@@ -596,7 +546,7 @@ function graficaSueldos(datosProcesados) {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false, 
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     position: 'bottom',
@@ -614,7 +564,7 @@ function graficaSueldos(datosProcesados) {
                     padding: { bottom: 20 }
                 },
                 datalabels: {
-                    display: false 
+                    display: false
                 }
             },
             scales: {
@@ -648,3 +598,15 @@ function graficaSueldos(datosProcesados) {
         }
     });
 }
+
+window.dropdownCampus = dropdownCampus;
+window.dropdownFacultad = dropdownFacultad;
+window.dropdownCarrera = dropdownCarrera;
+window.dropdownPeriodo = dropdownPeriodo;
+window.dropdownContrato = dropdownContrato;
+
+window.seleccionarCampus = seleccionarCampus;
+window.seleccionarFacultad = seleccionarFacultad;
+window.seleccionarCarrera = seleccionarCarrera;
+window.seleccionarPeriodo = seleccionarPeriodo;
+window.seleccionarContrato = seleccionarContrato;

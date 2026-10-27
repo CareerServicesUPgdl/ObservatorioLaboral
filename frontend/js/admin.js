@@ -146,28 +146,3 @@ function cambiarCuenta(id, nuevoRol) {
         alert("Error de conexión");
     });
 }
-
-async function refreshDatos() {
-    try {
-        console.log("Actualizando datos...");
-        const token = localStorage.getItem("token");
-
-        if (!confirm("El boton actualizar es para actualizar los datos del QS y los del semaforo laboral (no para actualizar a los usuarios) ¿Seguro que quieres actualizar los datos?")) {
-        return;
-    }
-
-        await fetch(`${API_URL}/actualizarDatos`, {
-            method: "POST",
-            headers: {
-                "Authorization": token
-            }
-        });
-
-        document.getElementById("mensaje").innerText = "Datos actualizados correctamente";
-
-        location.reload();
-
-    } catch (error) {
-        console.error(error);
-    }
-}

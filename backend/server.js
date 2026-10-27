@@ -307,6 +307,8 @@ let datosJunio2023 = [];
 let datosDiciembre2023 = [];
 let datosJunio2024 = [];
 let datosDiciembre2024 = [];
+let datosIniciativas25_26 = [];
+let datosIniciativas26_27 = [];
 
 //Cargar los datos al iniciar el servidor
 async function cargarDatos() {
@@ -315,7 +317,7 @@ async function cargarDatos() {
 
     try {
         //QS
-        const rows = await getSheet(process.env.IDSheetsQS, "'Respuestas de formulario 1'!A2:AD4850");
+        const rows = await getSheet(process.env.IDSheetsQS, "'Respuestas de formulario 1'!A2:AD5000");
 
         if (!rows || rows.length === 0) return res.status(404).json([]);
 
@@ -502,6 +504,27 @@ async function cargarDatos() {
             trabaja2: fila[18]
         }));
 
+        //Iniciativas de Career Services
+        const rowsInitivas25_26 = await getSheet(process.env.IDSheetsIniciativas, "'25-26'!A2:D40");
+
+        if (!rowsInitivas25_26 || rowsInitivas25_26.length === 0) return res.status(404).json([]);
+
+        datosIniciativas25_26 = rowsInitivas25_26.map(fila => ({
+            iniciativa: fila[0],
+            mes: fila[1],
+            descripcion: fila[3]
+        }));
+
+        const rowsInitivas26_27 = await getSheet(process.env.IDSheetsIniciativas, "'26-27'!A2:D40");
+
+        if (!rowsInitivas26_27 || rowsInitivas26_27.length === 0) return res.status(404).json([]);
+
+        datosIniciativas26_27 = rowsInitivas26_27.map(fila => ({
+            iniciativa: fila[0],
+            mes: fila[1],
+            descripcion: fila[3]
+        }));
+
     } catch (error) {
         console.error(error.message);
         res.status(500).json({ error: error.message });
@@ -591,6 +614,16 @@ app.get('/enoeData', async (req, res) => {
     res.json(datosFiltradosENOE)
 });
 
+//Iniciativas de Career Services 2025-2026
+app.get('/iniciativas25_26', async (req, res) => {
+    res.json(datosIniciativas25_26);
+});
+
+//Iniciativas de Career Services 2026-2027
+app.get('/iniciativas26_27', async (req, res) => {
+    res.json(datosIniciativas26_27);
+});
+
 let datosENOE = [];
 let datosFiltradosENOE = [];
 
@@ -606,30 +639,6 @@ function cargarENOE() {
         dato.carrera !== 0
     );
 }
-
-//En caso de que algun archivo cambie o se quiera actualizar la base de datos, se puede hacer desde el frontend
-app.post('/actualizarDatos', verificarToken, async (req, res) => {
-    try {
-        if (req.usuario.cuenta !== "Admin") {
-            return res.status(403).json({ error: "No tienes permisos de administrador" });
-        }
-
-        await cargarDatos();
-
-        res.json({
-            success: true,
-            mensaje: "Datos actualizados"
-        });
-
-    } catch (error) {
-
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
-
-    }
-});
 
 app.get('/10desempleados', async (req, res) => {
     try {
