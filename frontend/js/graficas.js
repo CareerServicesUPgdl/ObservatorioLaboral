@@ -45,3 +45,64 @@ export function graficaEmpleabilidad(si, no) {
         }
     });
 }
+
+const graficasBarras = {};
+export function graficaIniciativas(datos) {
+    const canvas = document.getElementById(datos.id);
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+
+    if (graficasBarras[datos.id]) {
+        graficasBarras[datos.id].destroy();
+    }
+
+    graficasBarras[datos.id] = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: datos.etiquetas,
+            datasets: datos.datasets
+        },
+        options: {
+            indexAxis: datos.axis,
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: datos.title,
+                    font: { size: 18, weight: 'bold' },
+                    color: '#000'
+                },
+                datalabels: {
+                    anchor: 'end',
+                    align: 'right',
+                    formatter: Math.round,
+                    font: { weight: 'bold' }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 },
+                    title: {
+                        display: true,
+                        text: 'Iniciativas'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#333',
+                        font: { size: 12 }
+                    },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+    
+    return graficasBarras[datos.id];
+}
