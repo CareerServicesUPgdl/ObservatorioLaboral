@@ -1,9 +1,12 @@
 const token = localStorage.getItem("token");
-import { graficaEmpleabilidad, graficaIniciativas } from './graficas.js';
+import { graficaEmpleabilidad, graficaIniciativas, graficaPie } from './graficas.js';
 let todosLosDatos = [];
 let datosFiltrados = [];
 let iniciativas2526 = [];
+let iniciativas2627 = [];
 let iniciativasFiltradas = [];
+let satisfaccion2526 = [];
+let satisfaccionFiltrada = [];
 
 if (!token) {
     window.location.href = "../html/Login.html";
@@ -75,6 +78,11 @@ async function iniciar() {
         todosLosDatos = await response.json();
         const inicativasRes = await fetch(`${API_URL}/iniciativas25_26`);
         iniciativas2526 = await inicativasRes.json();
+        const inicativasRes2 = await fetch(`${API_URL}/iniciativas26_27`);
+        iniciativas2627 = await inicativasRes2.json();
+        const satisfaccion25_26 = await fetch(`${API_URL}/satisfaccion25_26`);
+        satisfaccion2526 = await satisfaccion25_26.json();
+
         seleccionarPeriodo(filtroActual);
     } catch (error) {
         console.error("Error al obtener datos:", error);
@@ -84,11 +92,17 @@ async function iniciar() {
 
 function filtro() {
     if (filtroActual === "2025-2026") {
+        satisfaccionFiltrada = satisfaccion2526;
         iniciativasFiltradas = iniciativas2526;
         datosFiltrados = todosLosDatos.filter(dato => (dato.egreso === "Diciembre 2025" || dato.egreso === "Junio 2026") && dato.campus === "Guadalajara");
+    }else if (filtroActual === "2026-2027") {
+        satisfaccionFiltrada = [0];
+        iniciativasFiltradas = iniciativas2627;
+        datosFiltrados = todosLosDatos.filter(dato => (dato.egreso === "Diciembre 2026" || dato.egreso === "Junio 2027") && dato.campus === "Guadalajara");
     }
     iniciativas();
     emplebilidad();
+    satisfaccion();
 }
 
 function emplebilidad() {
@@ -152,6 +166,53 @@ function iniciativas() {
             backgroundColor: '#88803c'
         }]
     })
+}
+
+function satisfaccion(){
+    const satisfaccion = [
+        ...new Set(
+            satisfaccionFiltrada.map(satisfaccion => satisfaccion.satisfaccion)
+        )
+    ];
+    let conteo = Array(satisfaccion.length).fill(0);
+
+    for(let i=0; i < satisfaccionFiltrada.length; i++){
+        for(let j=0; j < satisfaccion.length; j++){
+            if(satisfaccionFiltrada[i].satisfaccion === satisfaccion[j]){
+                conteo[j]++;
+            }
+        }
+    }
+
+    let porsentajeSatisfaccion = 0;
+    let total=0;
+    for(let i=0; i < satisfaccion.length; i++){
+        total += conteo[i];
+        if(satisfaccion[i] === "Totalmente satisfecho" || satisfaccion[i] === "Muy satisfecho"){
+            porsentajeSatisfaccion += conteo[i];
+        }
+    }
+    
+    document.getElementById("satisfaccion-total").textContent = porsentajeSatisfaccion + "/" + total;
+    document.getElementById("satisfaccion-porcentaje").textContent = ((porsentajeSatisfaccion/total) * 100).toFixed(2) + "%";
+
+    graficaPie({
+            etiquetas: satisfaccion,
+            datasets: [{
+                label: 'satisfaccion',
+                data: [...conteo],
+                backgroundColor: [
+                    "#620000", // Vino oscuro
+                    "#A63D40", // Vino claro
+                    "#B59A30",  // Dorado
+                    "#8A1538", // Granate
+                ]
+            }],
+            id: 'satisfaccion',
+            title: 'Nivel de satisfacción con el servicio de Career Services',
+            personas: 'empresas',
+            nombre: 'chart-satisfaccion'
+        });
 }
 
 window.dropdownPeriodo = dropdownPeriodo;

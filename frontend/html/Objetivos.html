@@ -8,6 +8,7 @@
     <title>Observatorio Laboral Up</title>
     <link rel="stylesheet" href="../css/sidebar.css">
     <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/admin.css">
     <script src="../js/config.js"></script>
     <script type="module" src="../js/objetivos.js"></script>
 </head>
@@ -118,6 +119,20 @@
                     <li onclick="seleccionarPeriodo('2026-2027')">2026-2027</li>
                 </ul>
             </div>
+            <div class="actualizar">
+                <a href="../html/Administracion.html">
+                <button id="btnRefresh" class="btnRefresh"><svg xmlns="http://www.w3.org/2000/svg" width="20"
+                        height="20" fill="currentColor" class="bi bi-easel" viewBox="0 0 20 20">
+                        <path
+                            d="M8 0a.5.5 0 0 1 .473.337L9.046 2H14a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1.85l1.323 3.837a.5.5 0 1 1-.946.326L11.092 11H8.5v3a.5.5 0 0 1-1 0v-3H4.908l-1.435 4.163a.5.5 0 1 1-.946-.326L3.85 11H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h4.954L7.527.337A.5.5 0 0 1 8 0M2 3v7h12V3z" />
+                    </svg>
+                    <path
+                        d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" />
+                    </svg>
+                    <span>Administracion de Usuarios</span>
+                </button>
+                </a>
+            </div>
         </div>
         <h3 class="objetivo">Objetivo 1: Lograr 70% de empleabilidad en los egresados</h3>
         <div class="dashboard-container display">
@@ -148,7 +163,20 @@
                 <canvas id="graficaIniciativas"></canvas>
             </div>
         </div>
-        <h3 class="objetivo">Objetivo 3: Opinión positiva del servicio de Career Services</h3>
+        <h3 class="objetivo espacio">Objetivo 3: Opinión positiva del servicio de Career Services</h3>
+        <div class="dashboard-container display">
+            <div class="chart-3">
+                <canvas id="satisfaccion"></canvas>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Satisfacción con el departamento</div>
+                <div class="kpi-value" id="satisfaccion-porcentaje">0</div>
+                <div class="kpi-subtitle">Totalmente satisfecho y Muy satisfecho</div>
+                <div class="kpi-title">Empresas con opinión positiva / Total de empresas</div>
+                <div class="kpi-value" id="satisfaccion-total">0</div>
+                <div class="kpi-subtitle">Totalmente satisfecho y Muy satisfecho</div>
+            </div>
+        </div>
     </div>
 
     <link rel="stylesheet" href="../css/objetivos.css">

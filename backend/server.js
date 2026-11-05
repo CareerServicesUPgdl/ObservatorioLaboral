@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const app = express();
 const { getSheet } = require('./sheets.js');
 const fs = require('fs');
-const { generarENOE, top, top2 } = require("./CVS_a_JSON.js");
+const { generarENOE, topDesempleados, topPagadas, satisfaccionCS25_26 } = require("./CVS_a_JSON.js");
 
 const resend = new Resend(process.env.resendAPI);
 
@@ -49,30 +49,30 @@ app.post("/registro", async (req, res) => {
 
         if (usuario) {
             return res.status(400).json({ error: "Usuario ya existe" });
-        }else{
+        } else {
             const nuevoUsuario = new Usuario({
-            nombre,
-            apellido,
-            email,
-            password: hash,
-            cuenta: "Alumno" //simpre va a ser alumno. hasta que algun administrador lo cambie
-        });
+                nombre,
+                apellido,
+                email,
+                password: hash,
+                cuenta: "Alumno" //simpre va a ser alumno. hasta que algun administrador lo cambie
+            });
 
-        await nuevoUsuario.save();
+            await nuevoUsuario.save();
 
-        const token = jwt.sign(
-        { id: nuevoUsuario._id },
-        process.env.tokenSecret,
-        { expiresIn: "30d" }
-    );
-    console.log("enviando correo ...")
-    const link = `${process.env.URL}/verificar/${token}`; //aqui se crea el link para verficar al usuairio
+            const token = jwt.sign(
+                { id: nuevoUsuario._id },
+                process.env.tokenSecret,
+                { expiresIn: "30d" }
+            );
+            console.log("enviando correo ...")
+            const link = `${process.env.URL}/verificar/${token}`; //aqui se crea el link para verficar al usuairio
 
-    await resend.emails.send({ //aqui se manda el correo
-        from: 'onboarding@resend.dev',
-        to: email,
-        subject: 'Verficación de email - Observatorio Laboral UP',
-        html: `
+            await resend.emails.send({ //aqui se manda el correo
+                from: 'onboarding@resend.dev',
+                to: email,
+                subject: 'Verficación de email - Observatorio Laboral UP',
+                html: `
             <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto; padding:20px; border:1px solid #ddd; border-radius:10px; text-align:center;">
 
                 <h2>¡Gracias por registrarte en el observatorio laboral!</h2>
@@ -98,10 +98,10 @@ app.post("/registro", async (req, res) => {
 
             </div>
         `,
-    });
+            });
 
-    console.log("Correo enviado correctamente a:", email);
-    res.json({ mensaje: "Usuario creado. Revisa tu correo." });
+            console.log("Correo enviado correctamente a:", email);
+            res.json({ mensaje: "Usuario creado. Revisa tu correo." });
         }
 
     } catch (error) {
@@ -156,7 +156,7 @@ app.post("/login", async (req, res) => {
 //Aqui se inicia el servidor
 (async () => {
     await cargarDatos();
-    await iniciarENOE();
+    await iniciarCVS();
     await cargarENOE();
 
     app.listen(process.env.port, () => {
@@ -164,16 +164,19 @@ app.post("/login", async (req, res) => {
     });
 })();
 
-async function iniciarENOE() {
+async function iniciarCVS() {
 
-    if (!fs.existsSync("./data/ENOE.json")) {
+    if (!fs.existsSync("./datos/ENOE.json")) {
         await generarENOE();
     }
-    if (!fs.existsSync("./data/top_10_mas_desempleados.json")){
-        await top();
+    if (!fs.existsSync("./datos/top_10_mas_desempleados.json")) {
+        await topDesempleados();
     }
-    if (!fs.existsSync("./data/top_10_mejor_pagadas.json")){
-        await top2();
+    if (!fs.existsSync("./datos/top_10_mejor_pagadas.json")) {
+        await topPagadas();
+    }
+    if (!fs.existsSync("./datos/Satisfaccion25_26.json")) {
+        await satisfaccionCS25_26();
     }
 
 }
@@ -271,18 +274,18 @@ app.put("/usuarios/cuenta/:id", verificarToken, async (req, res) => {
         }
 
         const usuarioActualizado = await Usuario.findByIdAndUpdate(
-            id, 
-            { cuenta: cuenta }, 
-            { new: true } 
+            id,
+            { cuenta: cuenta },
+            { new: true }
         );
 
         if (!usuarioActualizado) {
             return res.status(404).json({ error: "Usuario no encontrado" });
         }
 
-        res.json({ 
-            mensaje: "Cuenta actualizada con éxito", 
-            usuario: usuarioActualizado 
+        res.json({
+            mensaje: "Cuenta actualizada con éxito",
+            usuario: usuarioActualizado
         });
 
     } catch (error) {
@@ -624,6 +627,22 @@ app.get('/iniciativas26_27', async (req, res) => {
     res.json(datosIniciativas26_27);
 });
 
+//Satisfaccion de career services 2025-2026
+app.get('/satisfaccion25_26', async (req, res) => {
+    let datosSatisfaccion25_26 = [];
+    let datosFiltrados = [];
+
+    datosSatisfaccion25_26 = JSON.parse(
+        fs.readFileSync('./datos/Satisfaccion25_26.json', 'utf8')
+    );
+
+    datosFiltrados = datosSatisfaccion25_26.filter(dato =>
+        dato.habilitado === "Habilitada" && dato.satisfaccion !== ""
+    );
+
+    res.json(datosFiltrados);
+});
+
 let datosENOE = [];
 let datosFiltradosENOE = [];
 
@@ -635,7 +654,7 @@ function cargarENOE() {
 
     datosFiltradosENOE = datosENOE.filter(dato =>
         dato.estado === 14 &&
-        (dato.grado === 7 || dato.grado === 6)&&
+        (dato.grado === 7 || dato.grado === 6) &&
         dato.carrera !== 0
     );
 }

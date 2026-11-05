@@ -31,7 +31,7 @@ function generarENOE() {
                     JSON.stringify(resultados, null, 2)
                 );
 
-                console.log('JSON generado');
+                console.log('JSON generado 1');
                 resolve();
             })
             .on('error', reject);
@@ -39,7 +39,7 @@ function generarENOE() {
     });
 }
 
-function top(){
+function topDesempleados(){
     return new Promise((resolve, reject) => {
 
         const resultados = [];
@@ -62,14 +62,14 @@ function top(){
                     JSON.stringify(resultados, null, 2)
                 );
 
-                console.log('JSON generado');
+                console.log('JSON generado 2');
                 resolve();
             })
             .on('error', reject);
     });
 }
 
-function top2(){
+function topPagadas(){
     return new Promise((resolve, reject) => {
 
         const resultados = [];
@@ -92,7 +92,7 @@ function top2(){
                     JSON.stringify(resultados, null, 2)
                 );
 
-                console.log('JSON generado');
+                console.log('JSON generado 3');
                 resolve();
             })
             .on('error', reject);
@@ -100,4 +100,34 @@ function top2(){
     });
 }
 
-module.exports = { generarENOE, top, top2 };
+function satisfaccionCS25_26(){
+    return new Promise((resolve, reject) => {
+
+        const resultados = [];
+
+        fs.createReadStream('./datos/Satisfaccion25_26.csv')
+            .pipe(csv())
+            .on('data', (fila) => {
+                const claves = Object.keys(fila);
+
+                resultados.push({
+                    habilitado: fila.Habilitada,
+                    satisfaccion: fila[claves[28]]
+                });
+            })
+            .on('end', () => {
+
+                fs.writeFileSync(
+                    './datos/Satisfaccion25_26.json',
+                    JSON.stringify(resultados, null, 2)
+                );
+
+                console.log('JSON generado 4');
+                resolve();
+            })
+            .on('error', reject);
+
+    });
+}
+
+module.exports = { generarENOE, topDesempleados, topPagadas, satisfaccionCS25_26 };

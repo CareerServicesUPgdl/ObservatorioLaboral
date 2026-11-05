@@ -70,7 +70,6 @@ function mostrarUsuarios(usuarios) {
                     <div class="cuenta" >
                         <button class="cuenta-btn ${usuario.cuenta === 'Alumno' ? 'active' : ''}" onclick="cambiarCuenta('${usuario._id}', 'Alumno')">Alumno</button>
                         <button class="cuenta-btn ${usuario.cuenta === 'Admin' ? 'active' : ''}" onclick="cambiarCuenta('${usuario._id}', 'Admin')">Admin</button>
-                        <button class="cuenta-btn ${usuario.cuenta === 'Director' ? 'active' : ''}" onclick="cambiarCuenta('${usuario._id}', 'Director')">Director</button>
                     </div>
                 </div>
                 <div class="delete-edit" onclick="deleteUser('${usuario._id}', '${usuario.email}')">

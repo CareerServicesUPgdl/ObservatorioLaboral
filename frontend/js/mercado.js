@@ -168,6 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
     actualizarDropdowns();
 });
 
+import { graficaPie } from './graficas.js';
 function aplicarFiltros() {
     const ocupados = ["Ocupados", "Desocupados", "Disponibles", "No disponibles"];
     const posicion = ["Trabajadores", "Empleadores", "Cuenta propia", "Sin pago"];
@@ -226,69 +227,6 @@ function aplicarFiltros() {
         title: 'Posición de los profesionales',
         personas: 'Profesionales',
         nombre: 'chart-posicion'
-    });
-}
-
-function graficaPie(datos) {
-    const nombre = datos.nombre;
-    const canvas = document.getElementById(datos.id);
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    Chart.register(ChartDataLabels);
-
-    if (window[nombre]) {
-        window[nombre].destroy();
-    }
-
-    window[nombre] = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: datos.etiquetas,
-            datasets: [{
-                data: datos.datasets[0].data,
-                backgroundColor: datos.datasets[0].backgroundColor,
-                borderColor: "#fff",
-                borderWidth: 2
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'right'
-                },
-                title: {
-                    display: true,
-                    text: datos.title,
-                    font: {
-                        size: 18,
-                        weight: 'bold'
-                    },
-                    color: '#000'
-                },
-                subtitle: {
-                    display: true,
-                    text: "Información obtenida por medio de la ENOE",
-                    color: '#666',
-                    padding: {
-                        bottom: 10
-                    }
-                },
-                datalabels: {
-                    color: '#fff',
-                    font: { size: 12 },
-                    display: (context) => context.dataset.data[context.dataIndex] > 0,
-                    formatter: (value, ctx) => {
-                        const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                        if (total === 0) return "0%"; // Evita división por cero
-                        const percentage = ((value * 100) / total).toFixed(1) + "%";
-                        return percentage;
-                    }
-                }
-            }
-        }
     });
 }
 
